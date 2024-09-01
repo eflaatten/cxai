@@ -6,11 +6,15 @@
   position: relative;
 }
 
+.App h1 {
+  text-shadow: 1px 1px 1px #000;
+  font-size: 50px;
+}
+
 body {
   margin: 0;
   color: #6eb6ff;
-  text-shadow: 1px 1px 1px #000;
-  background-color: #05111f;
+  background-color: #ffffff;
 }
 
 .chat-container {
@@ -19,8 +23,8 @@ body {
   flex-direction: column;
   justify-content: flex-end;
   padding: 20px;
-  width: 100%; 
-  max-width: 600px;
+  width: 100%;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -37,25 +41,30 @@ body {
 }
 
 .chat-message {
-  background-color: #1e283e;
+  background-color: #4781ff;
   color: #fff;
-  border-radius: 10px;
+  border-radius: 15px;
   padding: 10px;
-  margin: 5px auto;  /* Center the message horizontally */
-  max-width: 75%;  /* Limit the width of messages */
-  width: fit-content;  /* Automatically adjust to content */
+  margin: 5px auto;  
+  max-width: 75%;  
+  width: fit-content;  
 }
 
 .chat-message.sent {
-  align-self: flex-end; /* Aligns sent messages to the right */
-  margin-right: 20%;
-  width: 20%;
+  align-self: flex-end; 
+  margin-right: 30%;
+  width: fit-content;
+  text-align: left;
 }
 
 .chat-message.received {
-  align-self: flex-start; /* Aligns received messages to the left */
-  margin-left: 20%;
-  width: 25%;
+  text-align: left;
+  align-self: flex-start; 
+  margin-left: 30%;
+  margin-top: 50px;
+  width: fit-content;
+  background-color: #d6d6d6;
+  color: black;
 }
 
 .chat-message-send {
@@ -67,15 +76,209 @@ body {
 }
 
 .chat-box {
-  background-color: #1e283e;
-  color: #fff;
+  background-color: #d6d6d6;
+  color: #000000;
   border-radius: 10px;
   border: none;
   padding: 10px;
   flex: 1;
   resize: none;
   width: 500px;
-  height: 50px;
+  height: 20px;
   margin-bottom: 10px;
   outline: none;
+}
+
+
+/*SETTINGS*/
+
+/*GEAR ICON*/
+.gear-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: black;
+  font-size: 24px;
+  padding: 10px;
+  transform-origin: center;
+}
+
+.gear-icon:hover {
+  cursor: pointer;
+  animation: spin 0.6s linear; 
+}
+
+/*SETTINGS MENU*/
+.settings-container {
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  background-color: rgb(224, 224, 224);
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 170px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.settings-container label {
+  color: black;
+  font-weight: bold;
+}
+
+/*TOGGLE*/
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px; 
+  height: 20px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 40px;
+  height: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* The slider/toggle */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #9b9b9b;
+  transition: .2s; 
+  border-radius: 20px; 
+  width: 100%;
+  height: 100%;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px; 
+  width: 16px; 
+  left: 2px; 
+  bottom: 2px; 
+  background-color: white;
+  transition: .2s; 
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #0990ff;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 20px; 
+}
+
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #05111f;
+  color: #ffffff;
+}
+
+.chat-box.dark-mode {
+  background-color: #2b3847;
+  color: #ffffff;
+}
+
+.settings-container.dark-mode {
+  background-color: #253547;
+  border: none;
+}
+
+.settings-label.dark-mode {
+  color: #ffffff;
+}
+
+.app-header.dark-mode {
+  color: #5972ff;
+  text-shadow: 0 0 5px #304fff;
+}
+
+.chat-message.received.dark-mode {
+  background-color: #28384b;
+  color: #ffffff;
+}
+
+.gear-icon.dark-mode {
+  color: #ffffff;
+}
+
+.slider.round.dark-mode {
+  background-color: #0990ff;
+}
+
+/*Spin the gear icon*/
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+/*Laptop size*/
+@media (max-width: 1650px) {
+  .chat-container {
+    width: 60%;
+    max-width: 700px;
+  }
+
+  .chat-box {
+    width: 100%;
+  }
+
+  .chat-message.sent {
+    margin-right: 25%;
+  }
+
+  .chat-message.received {
+    margin-left: 25%;
+  }
+}
+
+
+/*Phone size*/
+@media (max-width: 768px) {
+  .chat-container {
+    width: 85%;
+    padding: 25px;
+  }
+
+  .chat-box {
+    width: 100%;
+  }
+
+  .chat-message.sent {
+    margin-right: 5%;
+  }
+
+  .chat-message.received {
+    margin-left: 5%;
+  }
+
+  .settings-container {
+    right: 50px;
+  }
 }

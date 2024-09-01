@@ -1,7 +1,7 @@
 import React from "react";
 import { FaPaperPlane } from "react-icons/fa";
 
-function Chat({ senderMessage, handleSenderMessageChange, handleSendMessage }) {
+function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendMessage }) {
   return (
     <div className='chat-container'>
       <div className='chat-messages'>
@@ -9,7 +9,7 @@ function Chat({ senderMessage, handleSenderMessageChange, handleSendMessage }) {
       </div>
       <div className="chat-message-send">
         <textarea
-          className='chat-box'
+          className={`chat-box ${darkTheme ? 'dark-mode' : ''}`}
           placeholder='Message CXAi'
           value={senderMessage}
           onChange={handleSenderMessageChange}
