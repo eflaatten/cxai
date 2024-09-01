@@ -33,26 +33,28 @@ function App() {
     setSenderMessage(e.target.value);
   };
 
-  const typeMessage = (message) => {
-    let index = 0;
-    setTypingMessage(message[0]);
-    setIsTyping(true);
 
-    const interval = setInterval(() => {
-      if (index < message.length) {
-        setTypingMessage((prev) => prev + message[index]);
-        index++;
-      } else {
-        clearInterval(interval);
-        setChatMessages((prevMessages) => [
-          ...prevMessages,
-          { text: message, type: "received" },
-        ]);
-        setTypingMessage("");
-        setIsTyping(false);
-      }
-    }, 20); // speed of typing
-  }
+const typeMessage = (message) => {
+  setIsTyping(true);
+  let index = 0;
+
+  setTypingMessage(""); // Clear previous typing message
+
+  const interval = setInterval(() => {
+    if (index < message.length) {
+      setTypingMessage((prev) => prev + message[index]);
+      index++;
+    } else {
+      clearInterval(interval);
+      setChatMessages((prevMessages) => [
+        ...prevMessages,
+        { text: message, type: "received" },
+      ]);
+      setTypingMessage(""); // Clear typing message
+      setIsTyping(false);
+    }
+  }, 10); // Adjust speed as needed
+};
 
   const handleSendMessage = async () => {
     if (senderMessage.trim()) {
@@ -95,23 +97,15 @@ function App() {
           <Settings darkTheme={darkTheme} toggleTheme={toggleTheme} />
         )}
       </div>
-      <h1 className={`app-header ${darkTheme ? 'dark-mode' : ''}`}>CXAi</h1>
-      <div className='chat-messages'>
-        {chatMessages.map((message, index) => (
-          <div key={index} className={`chat-message ${message.type === "sent" ? "sent" : `received ${darkTheme ? 'dark-mode' : ''}`}`}>
-            {message.text}
-          </div>
-        ))}
-        {typingMessage && (
-          <div className={`chat-message received ${darkTheme ? 'dark-mode' : ''}`}>{typingMessage}</div>
-        )}
-      </div>
-        <Chat
-          darkTheme={darkTheme}
-          senderMessage={senderMessage}
-          handleSenderMessageChange={handleSenderMessageChange}
-          handleSendMessage={handleSendMessage}
-        />
+      <Chat
+        darkTheme={darkTheme}
+        senderMessage={senderMessage}
+        handleSenderMessageChange={handleSenderMessageChange}
+        handleSendMessage={handleSendMessage}
+        chatMessages={chatMessages}
+        typingMessage={typingMessage}
+        setTypingMessage={setTypingMessage}
+      />
     </div>
   );
 }

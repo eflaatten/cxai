@@ -6,13 +6,9 @@
   position: relative;
 }
 
-.App h1 {
-  text-shadow: 1px 1px 1px #000;
-  font-size: 50px;
-}
-
 body {
   margin: 0;
+  padding: 0;
   color: #6eb6ff;
   background-color: #ffffff;
 }
@@ -29,7 +25,7 @@ body {
 }
 
 .chat-container button {
-  background-color: #6eb6ff;
+  background-color: #0080ff;
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -52,19 +48,26 @@ body {
 
 .chat-message.sent {
   align-self: flex-end; 
-  margin-right: 30%;
+  margin-right: -10%;
+  max-width: 60%;
   width: fit-content;
   text-align: left;
+  padding: 1px 10px; /* Adjusted padding */
+  margin-top: 5px; /* Adjusted margin */
+  margin-bottom: 5px; /* Adjusted margin */
 }
 
 .chat-message.received {
   text-align: left;
   align-self: flex-start; 
-  margin-left: 30%;
-  margin-top: 50px;
+  margin-left: -30%;
+  margin-top: 70px;
+  margin-bottom: 200px;
   width: fit-content;
+  max-width: 800px;
   background-color: #d6d6d6;
   color: black;
+  padding: 1px 10px; /* Adjusted padding */
 }
 
 .chat-message-send {
@@ -207,10 +210,6 @@ body.dark-mode {
   color: #ffffff;
 }
 
-.app-header.dark-mode {
-  color: #5972ff;
-  text-shadow: 0 0 5px #304fff;
-}
 
 .chat-message.received.dark-mode {
   background-color: #28384b;
@@ -250,11 +249,11 @@ body.dark-mode {
   }
 
   .chat-message.sent {
-    margin-right: 25%;
+    margin-right: -30%;
   }
 
   .chat-message.received {
-    margin-left: 25%;
+    margin-left: -40%;
   }
 }
 
@@ -271,11 +270,18 @@ body.dark-mode {
   }
 
   .chat-message.sent {
-    margin-right: 5%;
+    margin-right: -5%;
+    max-width: 100%;
+    margin-bottom: 30px;
+    margin-top: 50px;
+    height: fit-content;
   }
 
   .chat-message.received {
-    margin-left: 5%;
+    margin-left: -5%;
+    max-width: 100%;
+    margin-bottom: 100px;
+    margin-top: 30px;
   }
 
   .settings-container {

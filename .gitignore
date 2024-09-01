@@ -1,7 +1,5 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# OPENAI API KEY 
-.env 
+#OPENAI API KEY
+.env
 
 # dependencies
 /node_modules
