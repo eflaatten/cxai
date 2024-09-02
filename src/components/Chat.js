@@ -33,7 +33,7 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
 
 
   return (
-    <div className='chat-container'>
+    <div className={`chat-container ${darkTheme ? 'dark-mode': ''}`}>
       <div className='chat-messages'>
         {chatMessages.map((message, index) => (
           <div
