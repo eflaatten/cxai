@@ -25,7 +25,7 @@ body {
 }
 
 .chat-container button {
-	background: linear-gradient(90deg, rgba(71, 129, 255, 0.527) 0%, rgba(71, 129, 255, 0.5) 50%, rgba(113, 156, 248, 0.966) 100%);
+	background: linear-gradient(90deg, rgba(0, 117, 252, 0.959) 0%, rgba(94, 145, 255, 0.5) 50%, rgba(42, 109, 255, 0.966) 100%);
   background-size: 200px 100%;
 	color: #fff;
 	border: none;
@@ -44,7 +44,7 @@ body {
 .chat-message {
 	background-color: #4781ff;
 	color: #fff;
-	border-radius: 15px;
+	border-radius: 20px;
 	padding: 10px;
 	margin: 5px auto;  
 	max-width: 75%;  
@@ -71,12 +71,12 @@ body {
 .chat-message.received {
 	text-align: left;
 	align-self: flex-start; 
-	margin-left: -16%;
+	margin-left: -6%;
 	margin-top: 70px;
 	margin-bottom: 80px;
 	width: fit-content;
 	max-width: 700px;
-	background-color: #eeeeee;
+	background-color: #e7e7e7;
 	color: black;
 	padding: 1px 10px; 
 }
@@ -87,7 +87,6 @@ body {
 	align-items: center;
 	gap: 20px;
 	width: 100%;
-	margin-top: 300px;
 }
 
 .chat-box {
@@ -108,7 +107,64 @@ body {
 	flex-direction: column-reverse;
 }
 
+/*CODE BLOCK*/
+.code-block-wrapper {
+  position: relative;
+  margin-bottom: 1em;
+}
 
+.code-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; 
+  background-color: #202020; 
+  color: #fff; 
+  padding: 0 8px;
+  font-size: 1.0em;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  margin-bottom: -8px;
+}
+
+.language-label {
+  font-weight: bold;
+  margin: 0; 
+  padding: 8px 0; 
+}
+
+.copy-button {
+  background: none !important;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  padding: 4px 8px !important;
+	margin-top: 10px;
+}
+
+.copy-button:hover {
+  color: #ccc;
+}
+
+.copy-notification {
+  display: flex;
+  align-items: center;
+  color: #4caf50; 
+	font-size: 0.8em;
+	margin-right: 8px;
+}
+
+.check-icon {
+  margin-right: 8px;
+}
+
+pre[class*="language-"] {
+  margin-top: 0; 
+  border-top-left-radius: 0; 
+  border-top-right-radius: 0; 
+}
 /*SETTINGS*/
 
 /*GEAR ICON*/
@@ -212,9 +268,28 @@ body.dark-mode {
 	color: #ffffff;
 }
 
+.chat-container.dark-mode button {
+	background: linear-gradient(90deg, rgba(54, 175, 255, 0.794) 0%, rgba(71, 129, 255, 0.5) 50%, rgba(113, 156, 248, 0.966) 100%);
+  background-size: 200px 100%;
+	color: #fff;
+	border: none;
+	border-radius: 10px;
+	padding: 10px 20px;
+	cursor: pointer;
+	align-self: flex-end;
+	margin-bottom: 12px;
+	flex-shrink: 0;
+}
+
 .chat-box.dark-mode {
 	background-color: #2b3847;
 	color: #ffffff;
+}
+
+/* TYPING INDICATOR */
+
+.typing-indicator.dark-mode span {
+  background-color: #28384b;
 }
 
 .settings-container.dark-mode {
@@ -310,8 +385,8 @@ body.dark-mode {
 	.chat-message.received {
 		margin-left: -5%;
 		max-width: 100%;
-		margin-bottom: 80px;
-		margin-top: 30px;
+		margin-bottom: 50px;
+		margin-top: 50px;
 	}
 
 	.settings-container {

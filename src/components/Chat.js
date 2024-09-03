@@ -1,28 +1,70 @@
-import React from "react";
-import { FaPaperPlane } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaPaperPlane, FaClipboard, FaCheck } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { atomDark, coy } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 
 function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendMessage, chatMessages, typingMessage }) {
+  const [copied, setCopied] = useState(false);
+  
+  const customBlackTheme = {
+    ...tomorrow,
+    'pre[class*="language-"]': {
+      ...tomorrow['pre[class*="language-"]'],
+      background: "#000000", // Solid black background
+    },
+    'code[class*="language-"]': {
+      ...tomorrow['code[class*="language-"]'],
+      background: "#000000", // Solid black background
+    },
+  };
+
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       handleSendMessage();
     }
   };
 
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); 
+  };
+
+
   const components = {
     code({ node, inline, className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || "");
+      const language = match ? match[1] : "";
+      const codeText = String(children).replace(/\n$/, "");
+
       return !inline && match ? (
-        <SyntaxHighlighter
-          style={darkTheme ? atomDark : coy}
-          language={match[1]}
-          PreTag='div'
-          children={String(children).replace(/\n$/, "")}
-          {...props}
-        />
+        <div className='code-block-wrapper'>
+          <div className='code-block-header'>
+            <span className='language-label'>{language}</span>
+            <button
+              className='copy-button'
+              onClick={() => copyToClipboard(codeText)}
+            >
+            {copied && (
+              <div className='copy-notification'>
+                <FaCheck className='check-icon' />
+                <span>Code copied!</span>
+              </div>
+            )}
+              <FaClipboard />
+            </button>
+          </div>
+          <SyntaxHighlighter
+            style={customBlackTheme}
+            language={language}
+            PreTag='div'
+            {...props}
+          >
+            {codeText}
+          </SyntaxHighlighter>
+        </div>
       ) : (
         <code className={className} {...props}>
           {children}
@@ -30,6 +72,25 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
       );
     },
   };
+
+  // const components = {
+  //   code({ node, inline, className, children, ...props }) {
+  //     const match = /language-(\w+)/.exec(className || "");
+  //     return !inline && match ? (
+  //       <SyntaxHighlighter
+  //         style={customBlackTheme}
+  //         language={match[1]}
+  //         PreTag='div'
+  //         children={String(children).replace(/\n$/, "")}
+  //         {...props}
+  //       />
+  //     ) : (
+  //       <code className={className} {...props}>
+  //         {children}
+  //       </code>
+  //     );
+  //   },
+  // };
 
 
   return (

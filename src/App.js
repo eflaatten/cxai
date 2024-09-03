@@ -36,7 +36,7 @@ function App() {
 
 	const typeMessage = (message) => {
 		setIsTyping(true);
-		let index = 0;
+		let index = -1; // Starts at -1 so it doesn't skip the first letter. 
 
 		setTypingMessage(""); // Clear previous typing message
 
