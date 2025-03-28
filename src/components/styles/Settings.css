@@ -1,0 +1,89 @@
+.settings {
+  position: relative;
+  display: inline-block;
+}
+
+.gear-icon {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #000;
+}
+
+.gear-icon.dark-mode {
+  color: #fff; 
+}
+
+.settings-label {
+  position: absolute;
+  top: 12px;
+  right: 45px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.settings:hover .settings-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.settings-container {
+  position: absolute;
+  top: 50px;
+  right: 20px;
+  width: 150px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  color: #000;
+}
+
+.settings-container.dark-mode {
+  background: #253547;
+  color: #fff;
+}
+
+.theme-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.theme-options li {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #000;
+  border-radius: 13px;
+}
+
+.settings-container.dark-mode .theme-options li {
+  color: #fff; 
+}
+
+.theme-options li:hover {
+  background: #eee;
+}
+
+.settings-container.dark-mode .theme-options li:hover {
+  background: #06071c; 
+}
+
+.theme-options li.active {
+  background: #06071c;
+  color: white;        
+}
+
+.theme-icon {
+  color: inherit; 
+}

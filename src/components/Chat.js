@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaPaperPlane, FaClipboard, FaCheck } from "react-icons/fa";
+import { FaClipboard, FaCheck, FaArrowUp } from "react-icons/fa";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -12,17 +12,21 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
     ...tomorrow,
     'pre[class*="language-"]': {
       ...tomorrow['pre[class*="language-"]'],
-      background: "#000000", // Solid black background
+      background: "#000000",
     },
     'code[class*="language-"]': {
       ...tomorrow['code[class*="language-"]'],
-      background: "#000000", // Solid black background
+      background: "#000000", 
     },
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       handleSendMessage();
+    } else if (event.key === "Enter" && event.shiftKey) {
+      event.preventDefault();
+      handleSenderMessageChange((prev) => prev + "\n");
     }
   };
 
@@ -74,19 +78,26 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
   };
 
   return (
-    <div className={`chat-container ${darkTheme ? 'dark-mode': ''}`}>
+    <div className={`chat-container ${darkTheme ? "dark-mode" : ""}`}>
       <div className='chat-messages'>
         {chatMessages.map((message, index) => (
           <div
             key={index}
-            className={`chat-message ${message.type === "sent" ? "sent" : `received ${darkTheme ? "dark-mode" : ""}`}`}>
+            className={`chat-message ${
+              message.type === "sent"
+                ? "sent"
+                : `received ${darkTheme ? "dark-mode" : ""}`
+            }`}
+          >
             <ReactMarkdown components={components}>
               {message.text}
             </ReactMarkdown>
           </div>
         ))}
         {typingMessage && (
-          <div className={`chat-message received ${darkTheme ? "dark-mode" : ""}`}>
+          <div
+            className={`chat-message received ${darkTheme ? "dark-mode" : ""}`}
+          >
             <ReactMarkdown components={components}>
               {typingMessage}
             </ReactMarkdown>
@@ -94,16 +105,23 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
         )}
       </div>
       <div className='chat-message-send'>
-        <input
-          className={`chat-box ${darkTheme ? "dark-mode" : ""}`}
-          placeholder='Message CXAi'
-          value={senderMessage}
-          onChange={handleSenderMessageChange}
-          onKeyPress={handleKeyPress}
-        />
-        <button type='button' onClick={handleSendMessage}>
-          <FaPaperPlane />
-        </button>
+        <div className={`chat-box-wrapper ${darkTheme ? "dark-mode" : ""}`}>
+          <textarea
+            className={`chat-box ${darkTheme ? "dark-mode" : ""}`}
+            placeholder='Message CXAi'
+            value={senderMessage}
+            onChange={handleSenderMessageChange}
+            onKeyPress={handleKeyPress}
+            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+          />
+          <button
+            type='button'
+            onClick={handleSendMessage}
+            className='send-button'
+          >
+            <FaArrowUp />
+          </button>
+        </div>
       </div>
     </div>
   );

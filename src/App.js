@@ -21,13 +21,9 @@ function App() {
     }
   }, [darkTheme]);
 
-  const toggleTheme = () => {
-    setDarkTheme(!darkTheme);
-  }
-
   const toggleSettings = () => {
     setShowSettings(!showSettings);
-  }
+  };
 
   const handleSenderMessageChange = (e) => {
     setSenderMessage(e.target.value);
@@ -36,9 +32,9 @@ function App() {
 
   const typeMessage = (message) => {
     setIsTyping(true);
-    let index = -1; // Starts at -1 so it doesn't skip the first letter. 
+    let index = -1; 
 
-    setTypingMessage(""); // Clear previous typing message
+    setTypingMessage(""); 
 
     const interval = setInterval(() => {
       if (index < message.length) {
@@ -50,17 +46,15 @@ function App() {
           ...prevMessages,
           { text: message, type: "received" },
         ]);
-        setTypingMessage(""); // Clear typing message
+        setTypingMessage("");
         setIsTyping(false);
       }
-    }, 10); // Adjust speed as needed
+    }, 10);
   };
 
   const handleSendMessage = async () => {
     if (senderMessage.trim()) {
-      // add the user's message to the chat
       setChatMessages([...chatMessages, { text: senderMessage, type: "sent" }]);
-      // clear the input field
       setSenderMessage("");
     }
 
@@ -68,7 +62,7 @@ function App() {
 
     try {
       const response = await axios.post(
-        "https://api.openai.com/v1/chat/completions",
+        `https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=${process.env.REACT_APP_TENANT_ID}&flow_id=${process.env.REACT_APP_FLOW_ID}`,
         {
           model: "gpt-4o",
           messages: [{ role: "user", content: senderMessage }],
@@ -76,25 +70,36 @@ function App() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+            Authorization: `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`,
           },
         }
       );
-
       const assistantMessage = response.data.choices[0].message.content;
 
       typeMessage(assistantMessage);
     } catch (error) {
-      console.log("error:", error)
+      console.log("error:", error);
     }
   };
 
+  
+
   return (
-    <div className={`App ${darkTheme ? 'dark' : ''}`}>
-      <div className="settings">
-        <FaCog className={`gear-icon ${darkTheme ? "dark-mode" : ""}`}onClick={toggleSettings} />
+    <div className={`App ${darkTheme ? "dark" : ""}`}>
+      <div className='settings'>
+        <div className='gear-container'>
+          <FaCog
+            className={`gear-icon ${darkTheme ? "dark-mode" : ""}`}
+            onClick={toggleSettings}
+          />
+          <span className={`settings-label ${darkTheme ? "dark-mode" : ""}`}>Settings</span>
+        </div>
         {showSettings && (
-          <Settings darkTheme={darkTheme} toggleTheme={toggleTheme} />
+          <Settings
+            darkTheme={darkTheme}
+            setDarkTheme={setDarkTheme}
+            onClose={() => setShowSettings(false)}
+          />
         )}
       </div>
       <Chat

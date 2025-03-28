@@ -1,19 +1,47 @@
-import React, { useEffect } from "react";
+import React, { useRef, useEffect } from "react";
+import { FaSun, FaMoon } from "react-icons/fa";
+import "./styles/Settings.css";
 
-const Settings = ({ darkTheme, toggleTheme }) => {
+const Settings = ({ darkTheme, setDarkTheme, onClose }) => {
+  const menuRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
 
   return (
-    <div className={`settings-container ${darkTheme ? 'dark-mode' : ''}`}>
-      <label className={`settings-label ${darkTheme ? 'dark-mode' : ''}`}  htmlFor='theme-toggle'>Dark Mode</label>
-      <div className='switch'>
-        <input
-          type='checkbox'
-          id='theme-toggle'
-          checked={darkTheme}
-          onChange={toggleTheme}
-        />
-        <span className={`slider round ${darkTheme ? 'dark-mode' : ''}`}></span>
-      </div>
+    <div
+      className={`settings-container ${darkTheme ? "dark-mode" : ""}`}
+      ref={menuRef}
+    >
+      <ul className='theme-options'>
+        <li
+          className={!darkTheme ? "active" : ""}
+          onClick={() => {
+            setDarkTheme(false);
+            onClose(); 
+          }}
+        >
+          <FaSun className='theme-icon' /> Light
+        </li>
+        <li
+          className={darkTheme ? "active" : ""}
+          onClick={() => {
+            setDarkTheme(true); 
+            onClose(); 
+          }}
+        >
+          <FaMoon className='theme-icon' /> Dark
+        </li>
+      </ul>
     </div>
   );
 };
