@@ -26,7 +26,9 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
       handleSendMessage();
     } else if (event.key === "Enter" && event.shiftKey) {
       event.preventDefault();
-      handleSenderMessageChange((prev) => prev + "\n");
+      handleSenderMessageChange({
+        target: { value: senderMessage + "\n" },
+      });
     }
   };
 
@@ -108,11 +110,20 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
         <div className={`chat-box-wrapper ${darkTheme ? "dark-mode" : ""}`}>
           <textarea
             className={`chat-box ${darkTheme ? "dark-mode" : ""}`}
-            placeholder='Message CXAi'
+            placeholder='Type your message...'
             value={senderMessage}
             onChange={handleSenderMessageChange}
             onKeyPress={handleKeyPress}
-            onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+            onInput={(e) => {
+              e.target.style.height = "auto";
+              const maxHeight = 350;
+              e.target.style.height = `${Math.min(
+                e.target.scrollHeight,
+                maxHeight
+              )}px`;
+              e.target.style.overflowY =
+                e.target.scrollHeight > maxHeight ? "auto" : "hidden";
+            }}
           />
           <button
             type='button'

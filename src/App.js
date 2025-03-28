@@ -38,7 +38,7 @@ function App() {
 
     const interval = setInterval(() => {
       if (index < message.length) {
-        setTypingMessage((prev) => prev + message[index]);
+        setTypingMessage((prev) => prev + message.charAt(index));
         index++;
       } else {
         clearInterval(interval);
@@ -49,7 +49,7 @@ function App() {
         setTypingMessage("");
         setIsTyping(false);
       }
-    }, 10);
+    }, 20);
   };
 
   const handleSendMessage = async () => {
@@ -74,15 +74,17 @@ function App() {
           },
         }
       );
-      const assistantMessage = response.data.choices[0].message.content;
+      //const assistantMessage = response.data.choices[0].message.content;
+      const receivedMessage = response.data?.context?.flows?.openai_chat_interface?.steps?.rest_client_1?.componentData?.outputData?.message;
+      const errorMessage = response.data?.context?.flows?.openai_chat_interface?.steps?.rest_client_1?.componentData?.outputData?.error?.message;
+
+      const assistantMessage = receivedMessage || errorMessage || "I am unable to process your request. Please try again later.";
 
       typeMessage(assistantMessage);
     } catch (error) {
       console.log("error:", error);
     }
   };
-
-  
 
   return (
     <div className={`App ${darkTheme ? "dark" : ""}`}>
