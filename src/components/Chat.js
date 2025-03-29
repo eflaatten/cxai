@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { FaClipboard, FaCheck, FaArrowUp } from "react-icons/fa";
+import React, { useState, useRef, useEffect } from "react";
+import { FaClipboard, FaCheck, FaArrowUp, FaStopCircle } from "react-icons/fa";
+  
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -7,7 +8,23 @@ import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendMessage, chatMessages, typingMessage }) {
   const [copied, setCopied] = useState(false);
-  
+  const textareaRef = useRef(null);
+  const chatEndRef = useRef(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [senderMessage]);
+
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [chatMessages, typingMessage]);
+
   const customBlackTheme = {
     ...tomorrow,
     'pre[class*="language-"]': {
@@ -16,14 +33,21 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
     },
     'code[class*="language-"]': {
       ...tomorrow['code[class*="language-"]'],
-      background: "#000000", 
+      background: "#000000",
     },
+  };
+
+  const sendMessage = async () => {
+    if (!senderMessage.trim()) return; 
+    setIsProcessing(true);
+    await handleSendMessage();
+    setIsProcessing(false); 
   };
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      handleSendMessage();
+      sendMessage();
     } else if (event.key === "Enter" && event.shiftKey) {
       event.preventDefault();
       handleSenderMessageChange({
@@ -35,9 +59,8 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000); 
+    setTimeout(() => setCopied(false), 2000);
   };
-
 
   const components = {
     code({ node, inline, className, children, ...props }) {
@@ -53,12 +76,12 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
               className='copy-button'
               onClick={() => copyToClipboard(codeText)}
             >
-            {copied && (
-              <div className='copy-notification'>
-                <FaCheck className='check-icon' />
-                <span>Code copied!</span>
-              </div>
-            )}
+              {copied && (
+                <div className='copy-notification'>
+                  <FaCheck className='check-icon' />
+                  <span>Code copied!</span>
+                </div>
+              )}
               <FaClipboard />
             </button>
           </div>
@@ -105,32 +128,29 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
             </ReactMarkdown>
           </div>
         )}
+        <div ref={chatEndRef} />
       </div>
       <div className='chat-message-send'>
         <div className={`chat-box-wrapper ${darkTheme ? "dark-mode" : ""}`}>
           <textarea
+            ref={textareaRef}
             className={`chat-box ${darkTheme ? "dark-mode" : ""}`}
             placeholder='Type your message...'
             value={senderMessage}
-            onChange={handleSenderMessageChange}
+            onChange={(e) => handleSenderMessageChange(e)}
             onKeyPress={handleKeyPress}
-            onInput={(e) => {
-              e.target.style.height = "auto";
-              const maxHeight = 350;
-              e.target.style.height = `${Math.min(
-                e.target.scrollHeight,
-                maxHeight
-              )}px`;
-              e.target.style.overflowY =
-                e.target.scrollHeight > maxHeight ? "auto" : "hidden";
-            }}
           />
           <button
             type='button'
-            onClick={handleSendMessage}
+            onClick={sendMessage}
             className='send-button'
+            disabled={isProcessing}
           >
-            <FaArrowUp />
+            {isProcessing ? (
+              <FaStopCircle style={{ width: "25px", height: "25px" }} />
+            ) : (
+              <FaArrowUp />
+            )}
           </button>
         </div>
       </div>
