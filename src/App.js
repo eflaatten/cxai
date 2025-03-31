@@ -62,6 +62,7 @@ function App() {
 
     try {
       const response = await axios.post(
+        // OpenAI API endpoint: https://api.openai.com/v1/chat/completions
         `https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=${process.env.REACT_APP_TENANT_ID}&flow_id=${process.env.REACT_APP_FLOW_ID}`,
         {
           model: "gpt-4o",
@@ -70,15 +71,11 @@ function App() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`,
+            Authorization: `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`, // For OpenAI API directly replace with REACT_APP_OPENAI_API_KEY
           },
         }
       );
-      //const assistantMessage = response.data.choices[0].message.content;
-      const receivedMessage = response.data?.context?.flows?.openai_chat_interface?.steps?.rest_client_1?.componentData?.outputData?.message;
-      const errorMessage = response.data?.context?.flows?.openai_chat_interface?.steps?.rest_client_1?.componentData?.outputData?.error?.message;
-
-      const assistantMessage = receivedMessage || errorMessage || "I am unable to process your request. Please try again later.";
+      const assistantMessage = response.data?.choices?.[0]?.message?.content || "I am unable to process your request. Please try again later.";
 
       typeMessage(assistantMessage);
     } catch (error) {

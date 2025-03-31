@@ -1,3 +1,12 @@
+:root {
+  --color-black: #000;
+  --color-white: #fff;
+  --color-light-gray: #f5f5f5;
+  --color-dark-blue: #253547;
+  --color-hover-light: #eee;
+  --color-hover-dark: #06071c;
+}
+
 .settings {
   position: relative;
   display: inline-block;
@@ -9,11 +18,11 @@
   right: 15px;
   font-size: 24px;
   cursor: pointer;
-  color: #000;
+  color: var(--color-black);
 }
 
 .gear-icon.dark-mode {
-  color: #fff; 
+  color: var(--color-white); 
 }
 
 .settings-label {
@@ -38,17 +47,17 @@
   top: 50px;
   right: 20px;
   width: 150px;
-  background: #f5f5f5;
+  background: var(--color-light-gray);
   border-radius: 10px;
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 100;
-  color: #000;
+  color: var(--color-black);
 }
 
 .settings-container.dark-mode {
-  background: #253547;
-  color: #fff;
+  background: var(--color-dark-blue);
+  color: var(--color-white);
 }
 
 .theme-options {
@@ -63,25 +72,25 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #000;
+  color: var(--color-black);
   border-radius: 13px;
 }
 
 .settings-container.dark-mode .theme-options li {
-  color: #fff; 
+  color: var(--color-white); 
 }
 
 .theme-options li:hover {
-  background: #eee;
+  background: var(--color-hover-light);
 }
 
 .settings-container.dark-mode .theme-options li:hover {
-  background: #06071c; 
+  background: var(--color-hover-dark); 
 }
 
 .theme-options li.active {
-  background: #06071c;
-  color: white;        
+  background: var(--color-hover-dark);
+  color: var(--color-white);        
 }
 
 .theme-icon {
