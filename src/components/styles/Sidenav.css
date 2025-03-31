@@ -19,7 +19,7 @@
 
 @media (max-width: 768px) {
   .sidenav {
-    height: calc(100vh - 1010px);
+    height: calc(100vh - 995px);
     width: 30px;
   }
 
