@@ -6,7 +6,7 @@
   border-radius: 20px;
   background-color: var(--color-light-gray);
   color: var(--color-black);
-  height: calc(100vh - 600px);
+  height: auto;
   padding: 10px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
   display: flex;
@@ -17,18 +17,6 @@
   z-index: 100;
 }
 
-@media (max-width: 768px) {
-  .sidenav {
-    height: calc(100vh - 995px);
-    width: 30px;
-  }
-
-  .sidenav.open {
-    width: 200px;
-    height: calc(100vh - 600px);
-  }
-}
-
 .sidenav.dark-mode {
   color: var(--color-white);
 }
@@ -36,6 +24,7 @@
 
 .sidenav.open {
   width: 200px;
+  height: auto;
 }
 
 .sidenav.dark-mode .menu-toggle,
