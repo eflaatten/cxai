@@ -1,16 +1,60 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaClipboard, FaCheck, FaArrowUp, FaStopCircle } from "react-icons/fa";
-  
+import { FaClipboard, FaCheckCircle, FaStopCircle, FaClone } from "react-icons/fa";
+import SendIcon from "@mui/icons-material/Send";
+import TooltipWrapper from "./Tooltip";
+import IconButton from "@mui/material/IconButton";
 import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneLight, oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import "katex/dist/katex.min.css";
 
-
-function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendMessage, chatMessages, typingMessage }) {
-  const [copied, setCopied] = useState(false);
+function Chat({
+  darkTheme,
+  senderMessage,
+  handleSenderMessageChange,
+  handleSendMessage,
+  chatMessages,
+  typingMessage,
+}) {
+  const [copiedMessageIndex, setCopiedMessageIndex] = useState(null);
+  const [lastCopiedCode, setLastCopiedCode] = useState(null);
   const textareaRef = useRef(null);
   const chatEndRef = useRef(null);
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const formatMath = (text) => {
+    return text
+      .replace(/\\\(/g, "$")
+      .replace(/\\\)/g, "$")
+      .replace(/\\\[/g, "$$") 
+      .replace(/\\\]/g, "$$");
+  };
+
+  const handleCopyMessage = (messageText, index) => {
+    navigator.clipboard
+      .writeText(messageText)
+      .then(() => {
+        console.log("Message copied!");
+        setCopiedMessageIndex(index);
+        setLastCopiedCode(null);
+        setTimeout(() => setCopiedMessageIndex(null), 2000);
+      })
+      .catch((err) => console.error("Failed to copy message: ", err));
+  };
+
+  const handleCopyCode = (codeText) => {
+    navigator.clipboard
+      .writeText(codeText)
+      .then(() => {
+        console.log("Code copied!");
+        setLastCopiedCode(codeText);
+        setCopiedMessageIndex(null);
+        setTimeout(() => setLastCopiedCode(null), 2000);
+      })
+      .catch((err) => console.error("Failed to copy code: ", err));
+  };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -26,22 +70,34 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
   }, [chatMessages, typingMessage]);
 
   const customBlackTheme = {
-    ...tomorrow,
+    ...oneDark,
     'pre[class*="language-"]': {
-      ...tomorrow['pre[class*="language-"]'],
+      ...oneDark['pre[class*="language-"]'],
       background: "#000000",
     },
     'code[class*="language-"]': {
-      ...tomorrow['code[class*="language-"]'],
+      ...oneDark['code[class*="language-"]'],
       background: "#000000",
     },
   };
 
+  const customLightTheme = {
+    ...oneLight,
+    'pre[class*="language-"]': {
+      ...oneLight['pre[class*="language-"]'],
+      background: "#ffffff",
+    },
+    'code[class*="language-"]': {
+      ...oneLight['code[class*="language-"]'],
+      background: "#ffffff",
+    },
+  }
+
   const sendMessage = async () => {
-    if (!senderMessage.trim()) return; 
+    if (!senderMessage.trim()) return;
     setIsProcessing(true);
     await handleSendMessage();
-    setIsProcessing(false); 
+    setIsProcessing(false);
   };
 
   const handleKeyPress = (event) => {
@@ -56,39 +112,44 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
     }
   };
 
-  const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   const components = {
     code({ node, inline, className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || "");
       const language = match ? match[1] : "";
-      const codeText = String(children).replace(/\n$/, "");
+      const codeText = React.Children.toArray(children)
+        .join("")
+        .replace(/\n$/, "");
+
+      const isCopied = lastCopiedCode === codeText;
 
       return !inline && match ? (
         <div className='code-block-wrapper'>
           <div className='code-block-header'>
-            <span className='language-label'>{language}</span>
-            <button
-              className='copy-button'
-              onClick={() => copyToClipboard(codeText)}
-            >
-              {copied && (
-                <div className='copy-notification'>
-                  <FaCheck className='check-icon' />
-                  <span>Code copied!</span>
-                </div>
-              )}
-              <FaClipboard />
-            </button>
+            <span className='language-label'>{language || "code"}</span>
+
+            <TooltipWrapper title={isCopied ? "Copied!" : "Copy code"} arrow>
+              <IconButton
+                aria-label={isCopied ? "Copied!" : "Copy code"}
+                className='code-block-copy-button'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCopyCode(codeText);
+                }}
+                size='small'
+              >
+                {isCopied ? (
+                  <FaCheckCircle className='check-icon' />
+                ) : (
+                  <FaClipboard className='clipboard-icon' />
+                )}
+              </IconButton>
+            </TooltipWrapper>
           </div>
           <SyntaxHighlighter
-            style={customBlackTheme}
+            style={darkTheme ? customBlackTheme : customLightTheme}
             language={language}
             PreTag='div'
+            customStyle={{ padding: '0', margin: '0', fontSize: '14px' }}
             {...props}
           >
             {codeText}
@@ -105,27 +166,71 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
   return (
     <div className={`chat-container ${darkTheme ? "dark-mode" : ""}`}>
       <div className='chat-messages'>
-        {chatMessages.map((message, index) => (
-          <div
-            key={index}
-            className={`chat-message ${
-              message.type === "sent"
-                ? "sent"
-                : `received ${darkTheme ? "dark-mode" : ""}`
-            }`}
-          >
-            <ReactMarkdown components={components}>
-              {message.text}
-            </ReactMarkdown>
-          </div>
-        ))}
+        {chatMessages.map((message, index) => {
+          const isMessageCopied = copiedMessageIndex === index;
+
+          return (
+            <div
+              key={index}
+              className={`chat-message-container ${
+                message.type === "sent" ? "sent" : "received"
+              } ${darkTheme && message.type === "received" ? "dark-mode" : ""}`}
+            >
+              <div
+                className={`chat-message ${
+                  message.type === "sent"
+                    ? "sent"
+                    : `received ${darkTheme ? "dark-mode" : ""}`
+                }`}
+              >
+                <ReactMarkdown
+                  components={components}
+                  remarkPlugins={[remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                >
+                  {formatMath(message.text)}
+                </ReactMarkdown>
+              </div>
+              <div className='chat-actions-container'>
+                <TooltipWrapper
+                  title={isMessageCopied ? "Copied!" : "Copy message"}
+                  arrow
+                >
+                  <IconButton
+                    aria-label={isMessageCopied ? "Copied!" : "Copy message"}
+                    className='copy-message-button'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCopyMessage(message.text, index);
+                    }}
+                    size='small'
+                  >
+                    {isMessageCopied ? (
+                      <FaCheckCircle className='check-icon' />
+                    ) : (
+                      <FaClone className='content-copy-icon' />
+                    )}
+                  </IconButton>
+                </TooltipWrapper>
+              </div>
+            </div>
+          );
+        })}
         {typingMessage && (
-          <div
-            className={`chat-message received ${darkTheme ? "dark-mode" : ""}`}
-          >
-            <ReactMarkdown components={components}>
-              {typingMessage}
-            </ReactMarkdown>
+          <div className='chat-message-container received'>
+            <div
+              className={`chat-message received ${
+                darkTheme ? "dark-mode" : ""
+              }`}
+            >
+              <ReactMarkdown
+                components={components}
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+              >
+                {typingMessage}
+              </ReactMarkdown>
+            </div>
           </div>
         )}
         <div ref={chatEndRef} />
@@ -147,9 +252,9 @@ function Chat({ darkTheme, senderMessage, handleSenderMessageChange, handleSendM
             disabled={isProcessing}
           >
             {isProcessing ? (
-              <FaStopCircle style={{ width: "25px", height: "25px" }} />
+              <FaStopCircle style={{ width: "23px", height: "23px" }} />
             ) : (
-              <FaArrowUp />
+              <SendIcon style={{ marginLeft: "2px" }} />
             )}
           </button>
         </div>

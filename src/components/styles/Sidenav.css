@@ -1,0 +1,136 @@
+.sidenav {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 60px;
+  border-radius: 20px;
+  background-color: var(--color-light-gray);
+  color: var(--color-black);
+  height: calc(100vh - 600px);
+  padding: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: width 0.3s, top 0.3s, left 0.3s;
+  overflow: hidden;
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .sidenav {
+    height: calc(100vh - 1010px);
+    width: 30px;
+  }
+
+  .sidenav.open {
+    width: 200px;
+    height: calc(100vh - 600px);
+  }
+}
+
+.sidenav.dark-mode {
+  color: var(--color-white);
+}
+
+
+.sidenav.open {
+  width: 200px;
+}
+
+.sidenav.dark-mode .menu-toggle,
+.sidenav.dark-mode .minimized-text,
+.sidenav.dark-mode .theme-icon-wrapper,
+.sidenav.dark-mode .submenu-item {
+  color: var(--color-white);
+}
+
+.sidenav.dark-mode {
+  background-color: var(--color-dark-blue);
+}
+
+.menu-toggle {
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: var(--color-black);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.menu-toggle-open {
+  text-align: start;
+}
+
+.sidenav.dark-mode .menu-toggle {
+  color: var(--color-white);
+}
+
+.minimized-text {
+  font-size: 14px;
+  margin-right: 60px;
+  color: var(--color-black);
+}
+
+.theme-icon-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+  justify-content: flex-start;
+  padding-left: 40px;
+}
+
+.theme-text {
+  font-size: 16px;
+  padding-left: 15px;
+}
+
+.submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 80%;
+}
+
+.submenu-item {
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.submenu-item:hover {
+  background-color: var(--color-light-hover);
+}
+
+.sidenav.dark-mode .submenu-item:hover {
+  background-color: var(--color-hover-dark);
+}
+
+.submenu-item.active {
+  background-color: var(--color-light-active);
+  color: var(--color-black);
+}
+
+.sidenav.dark-mode .submenu-item.active {
+  background-color: var(--color-hover-dark);
+  color: var(--color-white);
+}
+
+.arrow-icon {
+  font-size: 14px;
+  transition: transform 0.3s;
+}
+
+.menu-item.open .arrow-icon {
+  transform: rotate(90deg);
+}

@@ -3,7 +3,7 @@ import axios from "axios";
 import "./App.css";
 import Chat from "./components/Chat";
 import Settings from './components/Settings';
-import { FaCog } from "react-icons/fa";
+import Sidenav from "./components/Sidenav";
 
 function App() {
   const [senderMessage, setSenderMessage] = useState("");
@@ -85,22 +85,7 @@ function App() {
 
   return (
     <div className={`App ${darkTheme ? "dark" : ""}`}>
-      <div className='settings'>
-        <div className='gear-container'>
-          <FaCog
-            className={`gear-icon ${darkTheme ? "dark-mode" : ""}`}
-            onClick={toggleSettings}
-          />
-          <span className={`settings-label ${darkTheme ? "dark-mode" : ""}`}>Settings</span>
-        </div>
-        {showSettings && (
-          <Settings
-            darkTheme={darkTheme}
-            setDarkTheme={setDarkTheme}
-            onClose={() => setShowSettings(false)}
-          />
-        )}
-      </div>
+      <Sidenav darkTheme={darkTheme} setDarkTheme={setDarkTheme} />
       <Chat
         darkTheme={darkTheme}
         senderMessage={senderMessage}
