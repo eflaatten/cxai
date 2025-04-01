@@ -249,12 +249,16 @@ function Chat({
             type='button'
             onClick={sendMessage}
             className='send-button'
-            disabled={isProcessing}
+            //disabled={isProcessing}
           >
             {isProcessing ? (
-              <FaStopCircle style={{ width: "23px", height: "23px" }} />
+              <TooltipWrapper title='Processing...' arrow placement='top'>
+                <FaStopCircle className='stop-circle' />
+              </TooltipWrapper>
             ) : (
-              <SendIcon style={{ marginLeft: "2px" }} />
+              <TooltipWrapper title='Send' arrow placement='top'>
+                <SendIcon style={{ marginLeft: "2px" }} />
+              </TooltipWrapper>
             )}
           </button>
         </div>

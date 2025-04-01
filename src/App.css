@@ -337,6 +337,21 @@ body.dark-mode {
    }
 }
 
+.stop-circle {
+  background: var(--color-send-button);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 6.76px;
+  bottom: 6.5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
 /* Settings */
 .settings-label {
   background-color: var(--color-settings-label-light) !important;
@@ -360,6 +375,9 @@ body.dark-mode {
 .code-block-wrapper {
   position: relative;
   margin: 1em 0;
+}
+.code-block-wrapper > div:nth-child(2) {
+  padding: 20px !important;
 }
 .code-block-header {
   display: flex;

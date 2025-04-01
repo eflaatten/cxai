@@ -27,22 +27,25 @@ const Sidenav = ({ darkTheme, setDarkTheme }) => {
         isOpen ? "open" : ""
       }`}
     >
-      <TooltipWrapper title={isOpen ? "Minimize" : "Maximize"}>
+      <TooltipWrapper
+        title={isOpen ? "Minimize" : "Maximize"}
+        placement='right'
+      >
         <div className='menu-toggle' onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? (
             <MenuOpenIcon className='menu-toggle-open' />
           ) : (
             <MenuIcon />
           )}
-          {isOpen && <span className='minimized-text'>Minimized</span>}
+          {isOpen && <span className='minimized-text'>Minimize</span>}
         </div>
       </TooltipWrapper>
 
       <div className='divider' />
 
-      <TooltipWrapper title='Theme'>
+      <TooltipWrapper title='Theme' placement='right'>
         <div className='theme-icon-wrapper' onClick={handleThemeClick}>
-          <AutoAwesomeIcon />
+          <AutoAwesomeIcon style={{ width: "23px", height: "23px" }} />
           {isOpen && (
             <>
               <span className='theme-text'>Theme</span>
