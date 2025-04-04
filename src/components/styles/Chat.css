@@ -258,6 +258,14 @@ body.dark-mode .copy-message-button:hover {
 .footer-text {
   font-size: 14px;
   color: var(--color-text-dark);
+  transition: color 0.3s;
+}
+
+.footer-text:hover {
+  color: var(--color-send-button);
+}
+.footer-text.dark-mode:hover {
+  color: var(--color-send-button);
 }
 
 .footer-text.dark-mode {
@@ -267,6 +275,11 @@ body.dark-mode .copy-message-button:hover {
 .chat-input-footer.dark-mode {
   background-color: var(--color-background-dark);
 }
+
+.github-link {
+  text-decoration: none;
+}
+
 
 @media (max-width: 1650px) {
   .chat-input-container {

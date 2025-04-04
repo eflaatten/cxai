@@ -11,6 +11,7 @@ import { oneLight, oneDark } from "react-syntax-highlighter/dist/esm/styles/pris
 import "katex/dist/katex.min.css";
 import "./styles/Chat.css";
 import { Loader2 } from "lucide-react";
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 function Chat({
   darkTheme,
@@ -240,25 +241,6 @@ function Chat({
             </div>
           </div>
         )}
-        {/* {typingMessage && (
-          <div className='chat-message-container received'>
-            <div
-              className={`chat-message received ${
-                darkTheme ? "dark-mode" : ""
-              }`}
-            >
-              {typingMessage.split(" ").map((word, i) => (
-                <span
-                  key={i}
-                  className='fade-in-word'
-                  style={{ animationDelay: `${i * 0.2}s` }}
-                >
-                  {word}&nbsp;
-                </span>
-              ))}
-            </div>
-          </div>
-        )} */}
         <div ref={chatEndRef} />
       </div>
       <div className='chat-message-send'>
@@ -289,9 +271,16 @@ function Chat({
           </div>
         </div>
         <div className={`chat-input-footer ${darkTheme ? "dark-mode" : ""}`}>
-          <span className={`footer-text ${darkTheme ? "dark-mode" : ""}`}>
-            Created by Elliot Flaatten
-          </span>
+          <a
+            className='github-link'
+            href='https://github.com/eflaatten/cxai'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            <span className={`footer-text ${darkTheme ? "dark-mode" : ""}`}>
+              View on GitHub
+            </span>
+          </a>
         </div>
       </div>
     </div>
