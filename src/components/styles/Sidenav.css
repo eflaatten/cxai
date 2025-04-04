@@ -1,6 +1,6 @@
 .sidenav {
   position: fixed;
-  top: 10px;
+  top: 25px;
   left: 10px;
   width: 40px;
   border-radius: 10px;
@@ -12,9 +12,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: width 0.3s, top 0.3s, left 0.3s;
   overflow: hidden;
   z-index: 100;
+  transition: width 0.3s, height 0.3s, background-color 0.3s;
+}
+
+.sidenav.menu-open {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 1px solid var(--color-black);
 }
 
 .sidenav.dark-mode {
@@ -63,19 +69,18 @@
   color: var(--color-black);
 }
 
-.theme-icon-wrapper {
+.menu-item-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  gap: 10px;
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
   width: 100%;
 }
 
-.sidenav.open .theme-icon-wrapper {
-  margin-right: 20px;
+.sidenav.open .menu-item-wrapper {
+  margin-right: 65px;
 }
 
 .theme-text {
@@ -83,11 +88,44 @@
   padding-left: 15px;
 }
 
+/* THEME MENU */
+.submenu-container {
+  position: fixed; 
+  left: calc(221px + 10px); 
+  top: 25px;
+  background-color: var(--color-light-gray);
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 101;
+  width: 150px;
+  height: auto;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.sidenav.dark-mode .submenu-container {
+  background-color: var(--color-dark-blue);
+}
+
 .submenu {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  width: 80%;
+  width: 100%;
+}
+
+.submenu-title {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-black);
+  padding: 10px;
+}
+
+.sidenav.dark-mode .submenu-title {
+  color: var(--color-white);
 }
 
 .submenu-item {
@@ -119,12 +157,6 @@
   color: var(--color-white);
 }
 
-.arrow-icon {
-  font-size: 26px;
-  margin-top: 2px;
-  transition: transform 0.3s;
-}
-
 .menu-item.open .arrow-icon {
   transform: rotate(90deg);
 }
@@ -134,4 +166,15 @@
   height: 1px;
   background-color: var(--color-black);
   margin: 10px 0;
+}
+
+/* Close Icon */
+.close-icon {
+  font-size: 24px;
+  color: var(--color-black);
+  cursor: pointer;
+}
+
+.sidenav.dark-mode .close-icon {
+  color: var(--color-white);
 }

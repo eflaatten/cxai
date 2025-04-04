@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaClipboard, FaCheckCircle, FaStopCircle, FaClone } from "react-icons/fa";
+import { FaClipboard, FaCheckCircle, FaClone } from "react-icons/fa";
 import SendIcon from "@mui/icons-material/Send";
 import TooltipWrapper from "./Tooltip";
 import IconButton from "@mui/material/IconButton";
@@ -9,6 +9,8 @@ import rehypeKatex from "rehype-katex";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight, oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import "katex/dist/katex.min.css";
+import "./styles/Chat.css";
+import { Loader2 } from "lucide-react";
 
 function Chat({
   darkTheme,
@@ -74,10 +76,12 @@ function Chat({
     'pre[class*="language-"]': {
       ...oneDark['pre[class*="language-"]'],
       background: "#000000",
+      color: "#ffffff", 
     },
     'code[class*="language-"]': {
       ...oneDark['code[class*="language-"]'],
       background: "#000000",
+      color: "#ffffff",
     },
   };
 
@@ -86,12 +90,15 @@ function Chat({
     'pre[class*="language-"]': {
       ...oneLight['pre[class*="language-"]'],
       background: "#ffffff",
+      color: "#222222",
     },
     'code[class*="language-"]': {
       ...oneLight['code[class*="language-"]'],
       background: "#ffffff",
+      color: "#222222", 
     },
-  }
+  };
+
 
   const sendMessage = async () => {
     if (!senderMessage.trim()) return;
@@ -233,10 +240,29 @@ function Chat({
             </div>
           </div>
         )}
+        {/* {typingMessage && (
+          <div className='chat-message-container received'>
+            <div
+              className={`chat-message received ${
+                darkTheme ? "dark-mode" : ""
+              }`}
+            >
+              {typingMessage.split(" ").map((word, i) => (
+                <span
+                  key={i}
+                  className='fade-in-word'
+                  style={{ animationDelay: `${i * 0.2}s` }}
+                >
+                  {word}&nbsp;
+                </span>
+              ))}
+            </div>
+          </div>
+        )} */}
         <div ref={chatEndRef} />
       </div>
       <div className='chat-message-send'>
-        <div className={`chat-box-wrapper ${darkTheme ? "dark-mode" : ""}`}>
+        <div className={`chat-input-container ${darkTheme ? "dark-mode" : ""}`}>
           <textarea
             ref={textareaRef}
             className={`chat-box ${darkTheme ? "dark-mode" : ""}`}
@@ -245,22 +271,27 @@ function Chat({
             onChange={(e) => handleSenderMessageChange(e)}
             onKeyPress={handleKeyPress}
           />
-          <button
-            type='button'
-            onClick={sendMessage}
-            className='send-button'
-            //disabled={isProcessing}
-          >
-            {isProcessing ? (
-              <TooltipWrapper title='Processing...' arrow placement='top'>
-                <FaStopCircle className='stop-circle' />
-              </TooltipWrapper>
-            ) : (
-              <TooltipWrapper title='Send' arrow placement='top'>
-                <SendIcon style={{ marginLeft: "2px" }} />
-              </TooltipWrapper>
-            )}
-          </button>
+          <div className='send-button-container'>
+            <button type='button' onClick={sendMessage} className='send-button'>
+              {isProcessing ? (
+                <TooltipWrapper title='Processing...' arrow placement='top'>
+                  <Loader2
+                    className='loader'
+                    style={{ width: "20px", height: "20px" }}
+                  />
+                </TooltipWrapper>
+              ) : (
+                <TooltipWrapper title='Send' arrow placement='top'>
+                  <SendIcon style={{ marginLeft: "2px" }} />
+                </TooltipWrapper>
+              )}
+            </button>
+          </div>
+        </div>
+        <div className={`chat-input-footer ${darkTheme ? "dark-mode" : ""}`}>
+          <span className={`footer-text ${darkTheme ? "dark-mode" : ""}`}>
+            Created by Elliot Flaatten
+          </span>
         </div>
       </div>
     </div>

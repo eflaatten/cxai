@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 import Chat from "./components/Chat";
-import Settings from './components/Settings';
 import Sidenav from "./components/Sidenav";
 
 function App() {
@@ -11,7 +10,6 @@ function App() {
   const [typingMessage, setTypingMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [darkTheme, setDarkTheme] = useState(true);
-  const [showSettings, setShowSettings] = useState(false);
 
   useEffect(() => {
     if (darkTheme) {
@@ -21,10 +19,6 @@ function App() {
     }
   }, [darkTheme]);
 
-  const toggleSettings = () => {
-    setShowSettings(!showSettings);
-  };
-
   const handleSenderMessageChange = (e) => {
     setSenderMessage(e.target.value);
   };
@@ -32,9 +26,9 @@ function App() {
 
   const typeMessage = (message) => {
     setIsTyping(true);
-    let index = -1; 
+    let index = 0;
 
-    setTypingMessage(""); 
+    setTypingMessage("");
 
     const interval = setInterval(() => {
       if (index < message.length) {
@@ -49,8 +43,49 @@ function App() {
         setTypingMessage("");
         setIsTyping(false);
       }
-    }, 20);
+    }, 20); 
   };
+  // const typeMessage = (message) => {
+  //   setIsTyping(true);
+  //   setTypingMessage("");
+
+  //   const containsCodeBlock = message.includes("```"); // Check for code
+
+  //   if (containsCodeBlock) {
+  //     // Instantly display code blocks instead of typing effect
+  //     setTypingMessage(message);
+  //     setTimeout(() => {
+  //       setChatMessages((prevMessages) => [
+  //         ...prevMessages,
+  //         { text: message, type: "received" },
+  //       ]);
+  //       setTypingMessage("");
+  //       setIsTyping(false);
+  //     }, 800); // Small delay for a smoother experience
+  //     return;
+  //   }
+
+  //   // Typing effect for non-code messages
+  //   const words = message.split(" ");
+  //   let index = 0;
+
+  //   const interval = setInterval(() => {
+  //     if (index < words.length) {
+  //       setTypingMessage((prev) =>
+  //         prev ? `${prev} ${words[index]}` : words[index]
+  //       );
+  //       index++;
+  //     } else {
+  //       clearInterval(interval);
+  //       setChatMessages((prevMessages) => [
+  //         ...prevMessages,
+  //         { text: message, type: "received" },
+  //       ]);
+  //       setTypingMessage("");
+  //       setIsTyping(false);
+  //     }
+  //   }, 100); // Adjust speed (100ms per word)
+  // }
 
   const handleSendMessage = async () => {
     if (senderMessage.trim()) {
