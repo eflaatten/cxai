@@ -1,6 +1,6 @@
 .sidenav {
   position: fixed;
-  top: 25px;
+  top: 15px;
   left: 10px;
   width: 40px;
   border-radius: 10px;
@@ -40,7 +40,7 @@
 }
 
 .sidenav.dark-mode {
-  background-color: var(--color-dark-blue);
+  background-color: var(--color-sidenav-background-dark);
 }
 
 .menu-toggle {
@@ -92,7 +92,7 @@
 .submenu-container {
   position: fixed; 
   left: calc(221px + 10px); 
-  top: 25px;
+  top: 15px;
   background-color: var(--color-light-gray);
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
@@ -107,7 +107,7 @@
 }
 
 .sidenav.dark-mode .submenu-container {
-  background-color: var(--color-dark-blue);
+  background-color: var(--color-sidenav-background-dark);
 }
 
 .submenu {
@@ -144,7 +144,7 @@
 }
 
 .sidenav.dark-mode .submenu-item:hover {
-  background-color: var(--color-hover-dark);
+  background-color: var(--color-sidenav-active-theme-color);
 }
 
 .submenu-item.active {
@@ -153,7 +153,7 @@
 }
 
 .sidenav.dark-mode .submenu-item.active {
-  background-color: var(--color-hover-dark);
+  background-color: var(--color-sidenav-active-theme-color);
   color: var(--color-white);
 }
 

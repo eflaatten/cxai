@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "./App.css";
 import Chat from "./components/Chat";
@@ -10,6 +10,9 @@ function App() {
   const [typingMessage, setTypingMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [darkTheme, setDarkTheme] = useState(true);
+  const typingTimeoutRef = useRef(null);
+  const typingBufferRef = useRef("");
+
 
   useEffect(() => {
     if (darkTheme) {
@@ -25,67 +28,35 @@ function App() {
 
 
   const typeMessage = (message) => {
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
     setIsTyping(true);
+    setTypingMessage("");
+    typingBufferRef.current = "";
+
     let index = 0;
 
-    setTypingMessage("");
-
-    const interval = setInterval(() => {
+    const typeNextChar = () => {
       if (index < message.length) {
-        setTypingMessage((prev) => prev + message.charAt(index));
+        typingBufferRef.current += message.charAt(index);
+        setTypingMessage(typingBufferRef.current);
         index++;
+        typingTimeoutRef.current = setTimeout(typeNextChar, 5);
       } else {
-        clearInterval(interval);
         setChatMessages((prevMessages) => [
           ...prevMessages,
           { text: message, type: "received" },
         ]);
         setTypingMessage("");
         setIsTyping(false);
+        typingTimeoutRef.current = null;
       }
-    }, 20); 
+    };
+
+    typeNextChar();
   };
-  // const typeMessage = (message) => {
-  //   setIsTyping(true);
-  //   setTypingMessage("");
-
-  //   const containsCodeBlock = message.includes("```"); // Check for code
-
-  //   if (containsCodeBlock) {
-  //     // Instantly display code blocks instead of typing effect
-  //     setTypingMessage(message);
-  //     setTimeout(() => {
-  //       setChatMessages((prevMessages) => [
-  //         ...prevMessages,
-  //         { text: message, type: "received" },
-  //       ]);
-  //       setTypingMessage("");
-  //       setIsTyping(false);
-  //     }, 800); // Small delay for a smoother experience
-  //     return;
-  //   }
-
-  //   // Typing effect for non-code messages
-  //   const words = message.split(" ");
-  //   let index = 0;
-
-  //   const interval = setInterval(() => {
-  //     if (index < words.length) {
-  //       setTypingMessage((prev) =>
-  //         prev ? `${prev} ${words[index]}` : words[index]
-  //       );
-  //       index++;
-  //     } else {
-  //       clearInterval(interval);
-  //       setChatMessages((prevMessages) => [
-  //         ...prevMessages,
-  //         { text: message, type: "received" },
-  //       ]);
-  //       setTypingMessage("");
-  //       setIsTyping(false);
-  //     }
-  //   }, 100); // Adjust speed (100ms per word)
-  // }
 
   const handleSendMessage = async () => {
     if (senderMessage.trim()) {

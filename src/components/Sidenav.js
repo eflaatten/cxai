@@ -20,7 +20,6 @@ const Sidenav = ({ darkTheme, setDarkTheme }) => {
   const handleThemeClick = () => {
     if (!isOpen) {
       setIsOpen(true);
-      setIsThemeMenuOpen(true);
     } else {
       setIsThemeMenuOpen(!isThemeMenuOpen);
     }

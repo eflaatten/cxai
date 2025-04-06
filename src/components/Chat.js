@@ -11,7 +11,6 @@ import { oneLight, oneDark } from "react-syntax-highlighter/dist/esm/styles/pris
 import "katex/dist/katex.min.css";
 import "./styles/Chat.css";
 import { Loader2 } from "lucide-react";
-import GitHubIcon from "@mui/icons-material/GitHub";
 
 function Chat({
   darkTheme,
@@ -132,7 +131,7 @@ function Chat({
 
       return !inline && match ? (
         <div className='code-block-wrapper'>
-          <div className='code-block-header'>
+          <div className={`code-block-header ${darkTheme ? "dark-mode" : ""}`}>
             <span className='language-label'>{language || "code"}</span>
 
             <TooltipWrapper title={isCopied ? "Copied!" : "Copy code"} arrow>
@@ -157,7 +156,7 @@ function Chat({
             style={darkTheme ? customBlackTheme : customLightTheme}
             language={language}
             PreTag='div'
-            customStyle={{ padding: '0', margin: '0', fontSize: '14px' }}
+            customStyle={{ padding: "0", margin: "0", fontSize: "14px" }}
             {...props}
           >
             {codeText}
@@ -254,7 +253,7 @@ function Chat({
             onKeyPress={handleKeyPress}
           />
           <div className='send-button-container'>
-            <button type='button' onClick={sendMessage} className='send-button'>
+            <button type='button' onClick={sendMessage} className={`send-button ${darkTheme ? "dark-mode" : ""}`}>
               {isProcessing ? (
                 <TooltipWrapper title='Processing...' arrow placement='top'>
                   <Loader2
