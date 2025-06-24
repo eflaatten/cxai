@@ -38,6 +38,7 @@ const Sidenav = ({ darkTheme, setDarkTheme }) => {
       <TooltipWrapper
         title={isOpen ? "Minimize" : "Maximize"}
         placement='right'
+        darkTheme={darkTheme}
       >
         <div className='menu-toggle' onClick={() => toggleSidenav()}>
           {isOpen ? (
@@ -51,7 +52,7 @@ const Sidenav = ({ darkTheme, setDarkTheme }) => {
 
       <div className='divider' />
 
-      <TooltipWrapper title='Theme' placement='right'>
+      <TooltipWrapper title='Theme' placement='right' darkTheme={darkTheme}>
         <div className='menu-item-wrapper' onClick={handleThemeClick}>
           {isThemeMenuOpen ? (
             <CircleX className='close-icon' onClick={closeMenu} />

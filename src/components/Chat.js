@@ -134,7 +134,11 @@ function Chat({
           <div className={`code-block-header ${darkTheme ? "dark-mode" : ""}`}>
             <span className='language-label'>{language || "code"}</span>
 
-            <TooltipWrapper title={isCopied ? "Copied!" : "Copy code"} arrow>
+            <TooltipWrapper
+              title={isCopied ? "Copied!" : "Copy code"}
+              arrow
+              darkTheme={darkTheme}
+            >
               <IconButton
                 aria-label={isCopied ? "Copied!" : "Copy code"}
                 className='code-block-copy-button'
@@ -202,6 +206,7 @@ function Chat({
                 <TooltipWrapper
                   title={isMessageCopied ? "Copied!" : "Copy message"}
                   arrow
+                  darkTheme={darkTheme}
                 >
                   <IconButton
                     aria-label={isMessageCopied ? "Copied!" : "Copy message"}
@@ -255,14 +260,14 @@ function Chat({
           <div className='send-button-container'>
             <button type='button' onClick={sendMessage} className={`send-button ${darkTheme ? "dark-mode" : ""}`}>
               {isProcessing ? (
-                <TooltipWrapper title='Processing...' arrow placement='top'>
+                <TooltipWrapper title='Processing...' arrow placement='top' darkTheme={darkTheme}>
                   <Loader2
                     className='loader'
                     style={{ width: "20px", height: "20px" }}
                   />
                 </TooltipWrapper>
               ) : (
-                <TooltipWrapper title='Send' arrow placement='top'>
+                <TooltipWrapper title='Send' arrow placement='top' darkTheme={darkTheme}>
                   <SendIcon style={{ marginLeft: "2px" }} />
                 </TooltipWrapper>
               )}

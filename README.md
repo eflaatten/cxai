@@ -1,14 +1,29 @@
-# CXAi
+# CXAI
 
-To use it:
-1. Install dependencies `npm install`
+## Usage
+
+### Installation
+1. Install dependencies:  
+  ```bash
+  npm install
+  ```
 2. Create a `.env` file in the root folder.
 
-### For CXFabric Flow
-Add CXFabric `REACT_APP_TENANT_ID`, `REACT_APP_FLOW_ID` and `REACT_APP_BEARER_TOKEN`
+### Configuration
 
-### Calling OpenAI API directly 
-Add your API key from OpenAI and name it `REACT_APP_OPENAI_API_KEY`. It should look like `REACT_APP_OPENAI_KEY=your openai api key`.
+#### For CXFabric Flow
+Add the following environment variables to your `.env` file:
+- `REACT_APP_TENANT_ID`
+- `REACT_APP_FLOW_ID`
+- `REACT_APP_BEARER_TOKEN`
 
-### Start 
-Run `npm start`.
+#### Calling OpenAI API Directly
+Add your OpenAI API key to the `.env` file:
+- `REACT_APP_OPENAI_API_KEY=your_openai_api_key`
+
+### Start the Application
+Run the following command to start the application:  
+```bash
+npm start
+```
+

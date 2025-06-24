@@ -77,7 +77,7 @@ function App() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`, // For OpenAI API directly replace with REACT_APP_OPENAI_API_KEY
+            Authorization: `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`,
           },
         }
       );

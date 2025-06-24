@@ -85,9 +85,9 @@
 
 .chat-message.sent {
   background-color: var(--color-chat-message-sent);
-  color: var(--color-text-light);
+  color: var(--color-white);
   margin-left: auto;
-  margin-right: 10px;
+  margin-right: 17px;
   max-width: 100%;
   min-width: 20px;
   text-align: center;
@@ -100,23 +100,22 @@
 
 .chat-message.received {
   background-color: var(--color-chat-message-received);
-  /* background-color: transparent; */
-  color: var(--color-text-dark);
+  color: var(--color-black);
   font-size: large;
   text-align: left;
   margin-right: auto;
-  margin-left: 12px;
+  margin-left: 10px;
   margin-top: 10px;
   margin-bottom: 10px;
   width: fit-content;
   max-width: 100% !important;
   min-width: 40px;
+  padding: 1px 15px 1px 15px;
   border-radius: 20px 20px 20px 20px !important;
 }
 
 .chat-message.received.dark-mode {
   background-color: var(--color-chat-message-received-dark);
-  /* background-color: transparent; */
   color: var(--color-text-light);
 }
 
@@ -231,7 +230,7 @@ body.dark-mode .copy-message-button:hover {
   padding: 10px;
   box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
   color: var(--color-text-dark);
-  border-radius: 20px;
+  border-radius: 30px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s;
   width: 65%;
@@ -292,7 +291,7 @@ body.dark-mode .copy-message-button:hover {
   }
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .chat-input-container {
     width: 95%; 
     padding: 8px;
@@ -322,15 +321,54 @@ body.dark-mode .copy-message-button:hover {
     font-size: 12px;
     text-align: center;
   }
+} */
+
+@media (max-width: 768px) {
+  .chat-input-container {
+    width: 100%;
+    padding: 10px 0 0 0;
+    margin: 0;
+    min-height: auto;
+    border-radius: 26px 26px 0 0;
+    /* box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.1); */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+
+  .chat-box-wrapper {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .chat-box {
+    width: 100%;
+    font-size: 16px;
+    border-radius: 0;
+  }
+
+  .chat-input-footer {
+    padding: 0;
+    width: 100%;
+  }
+
+  .footer-text {
+    display: none;
+  }
 }
+
 
 
 .chat-box {
   width: 100%;
-  background-color: var(--color-chat-box-light);
+  background-color: transparent;
   color: var(--color-text-dark);
   border: none;
-  font-size: 15px;
+  font-size: 17px;
+  font-family: Arial, Helvetica, sans-serif;
   padding: 12px;
   resize: none;
   min-height: 50px;
@@ -340,7 +378,7 @@ body.dark-mode .copy-message-button:hover {
 }
 
 .chat-box.dark-mode {
-  background-color: var(--color-chat-box-dark);
+  background-color: transparent;
   color: var(--color-text-light);
 }
 
@@ -446,10 +484,11 @@ body.dark-mode .copy-message-button:hover {
 
 @media (max-width: 768px) {
   .send-button {
+    position: absolute;
     width: 30px;
     height: 30px;
     right: 6px;
-    bottom: 27px;
+    bottom: 12px;
   }
   .send-button:hover{
     background-color: var(--color-send-button);
@@ -457,6 +496,9 @@ body.dark-mode .copy-message-button:hover {
   .send-button svg {
     width: 16px;
     height: 16px;
+  }
+  .send-button-container {
+    padding: 60px 5px 0 5px;
   }
 }
 
