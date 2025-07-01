@@ -1,94 +1,126 @@
 import React, { useState } from "react";
-import MenuIcon from "@mui/icons-material/Menu";
-import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-import { CircleX, Sun, Moon } from "lucide-react";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import TooltipWrapper from "./Tooltip";
-import "./styles/Sidenav.css";
+import Settings from '../pages/dialogs/Settings';
+import { MenuOpenIcon, ChatIcon, EditIcon, UpArrowIcon2, DownArrowIcon } from "../assets/icons";
+import cxfab_logo from "../assets/logos/cxf_logo.png";
+import cxfab_circle from "../assets/logos/cxfab_circle.png";
+import './styles/Sidenav.css';
 
-const Sidenav = ({ darkTheme, setDarkTheme }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+const Sidenav = ({ darkTheme, isOpen, setIsOpen }) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  
+  // Sample chat data
+const chats = [
+  { id: 1, name: "Client: Sarah Miller – Contract Review" },
+  { id: 2, name: "Research – Texas Non-Compete Statutes" },
+  { id: 3, name: "Client: Acme Corp – MSA Negotiations" },
+  { id: 4, name: "Quick Ask: PTO Policy Template" },
+  { id: 5, name: "Client: Brian O’Connor – Employment Inquiry" },
+  { id: 6, name: "Research – Trademark Application Steps" },
+  { id: 7, name: "Client: Jane Lee – Lease Agreement Draft" },
+  { id: 8, name: "Team: Litigation Prep Notes" },
+  { id: 9, name: "Client: Robert Yu – IP Transfer Questions" },
+  { id: 10, name: "Draft Email: Opposing Counsel Follow-Up" },
+  { id: 11, name: "Client: Delta Partners – NDA Terms" },
+  { id: 12, name: "Research – Texas Discovery Deadlines" },
+  { id: 13, name: "Team: Friday Standup Recap" },
+  { id: 14, name: "Client: Ingrid Patel – Divorce Consultation" },
+  { id: 15, name: "Draft: Court Motion for Continuance" },
+  { id: 16, name: "Client: Omar Reyes – Billing Question" },
+  { id: 17, name: "Research – Fair Use Copyright" },
+  { id: 18, name: "Client: Ava Robinson – Demand Letter" },
+  { id: 19, name: "Team: Onboarding Checklist" },
+  { id: 20, name: "Client: Leo Chang – Case Status Update" },
+  { id: 21, name: "Research – Arbitration vs Mediation" },
+  { id: 22, name: "Client: Harper Group – Corporate Minutes" },
+  { id: 23, name: "Draft: Retainer Agreement Template" },
+  { id: 24, name: "Client: Michael Lee – Real Estate Closing" },
+  { id: 25, name: "Team: Q3 Budget Planning, LONG CHAT NAMELONG CHAT NAMELONG CHAT NAMELONG CHAT NAME " },
+];
 
-  const toggleSidenav = () => {
-    if (isOpen) {
-      setIsThemeMenuOpen(false); 
-    }
-    setIsOpen(!isOpen);
-  };
-
-  const handleThemeClick = () => {
-    if (!isOpen) {
-      setIsOpen(true);
-    } else {
-      setIsThemeMenuOpen(!isThemeMenuOpen);
-    }
-  };
-
-  const closeMenu = () => {
-    setIsThemeMenuOpen(false);
-  };
 
   return (
-    <div
-      className={`sidenav ${darkTheme ? "dark-mode" : ""} ${
-        isOpen ? "open" : ""
-      } ${isThemeMenuOpen ? "menu-open" : ""}`} 
-    >
-      <TooltipWrapper
-        title={isOpen ? "Minimize" : "Maximize"}
-        placement='right'
-        darkTheme={darkTheme}
-      >
-        <div className='menu-toggle' onClick={() => toggleSidenav()}>
+    <div className={`sidenav${darkTheme ? " dark-mode" : ""}${isOpen ? " open" : ""}`}>
+      <div className="sidenav-top">
+        <div className="sidenav-logo-container">
           {isOpen ? (
-            <MenuOpenIcon className='menu-toggle-open' />
-          ) : (
-            <MenuIcon />
-          )}
-          {isOpen && <span className='minimized-text'>Minimize</span>}
-        </div>
-      </TooltipWrapper>
-
-      <div className='divider' />
-
-      <TooltipWrapper title='Theme' placement='right' darkTheme={darkTheme}>
-        <div className='menu-item-wrapper' onClick={handleThemeClick}>
-          {isThemeMenuOpen ? (
-            <CircleX className='close-icon' onClick={closeMenu} />
-          ) : (
-            <AutoAwesomeIcon style={{ width: "23px", height: "23px" }} />
-          )}
-          {isOpen && (
             <>
-              <span className='theme-text'>Theme</span>
+              <img
+                className="sidenav-logo"
+                src={cxfab_logo}
+                alt="Logo"
+                width={170}
+                height={28}
+              />
+              <button
+                className="sidenav-toggle-btn"
+                onClick={() => setIsOpen(false)}
+                aria-label="Minimize menu"
+              >
+                <MenuOpenIcon className="sidenav-toggle-icon" />
+              </button>
             </>
+          ) : (
+            <img
+              className="sidenav-logo minimized"
+              src={cxfab_circle}
+              alt="Logo"
+              width={32}
+              height={32}
+            />
           )}
         </div>
-      </TooltipWrapper>
 
-      {isOpen && isThemeMenuOpen && (
-        <div className='submenu-container'>
-          <div className='submenu'>
-            <div className='submenu-title'>Select Theme</div>
-
-            <div className="divider" />
-
-            <div
-              className={`submenu-item ${!darkTheme ? "active" : ""}`}
-              onClick={() => setDarkTheme(false)}
-            >
-              <Sun className='theme-icon' /> Light
-            </div>
-            <div
-              className={`submenu-item ${darkTheme ? "active" : ""}`}
-              onClick={() => setDarkTheme(true)}
-            >
-              <Moon className='theme-icon' /> Dark
-            </div>
-          </div>
+        <div className="sidenav-settings-container">
+          {isOpen ? (
+            <button className="new-chat-btn">
+              <EditIcon className="edit-icon" />
+              New Chat
+            </button>
+          ) : (
+            <button className="new-chat-btn minimized">
+              <EditIcon className="edit-icon" />
+            </button>
+          )}
         </div>
-      )}
+
+        {isOpen && (
+        <>
+          <div className="chats-dropdown-section">
+            <button
+              className="chats-dropdown-btn"
+              onClick={() => setDropdownOpen((open) => !open)}
+              aria-expanded={dropdownOpen}
+              aria-label="Toggle chats dropdown"
+            >
+              <ChatIcon className="chats-header-icon" />
+              <span className="chats-header">Chats</span>
+              {dropdownOpen ? (
+                <UpArrowIcon2 className="chats-dropdown-caret" style={{ marginLeft: "auto" }} />
+              ) : (
+                <DownArrowIcon className="chats-dropdown-caret" style={{ marginLeft: "auto" }} />
+              )}
+            </button>
+            {dropdownOpen && (
+              <div className="chats-list">
+                {chats.map(chat => {
+                  let summary = chat.name.split(/[–:]/)[1] || chat.name;
+                  summary = summary.trim();
+                  if (summary.length > 20) {
+                    summary = summary.slice(0, 23) + "...";
+                  }
+                  return (
+                    <div className="dropdown-chat-item" key={chat.id}>
+                      {summary}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </>
+        )}
+      </div>
     </div>
   );
 };

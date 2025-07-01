@@ -10,7 +10,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight, oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import "katex/dist/katex.min.css";
 import "./styles/Chat.css";
-import { Loader2 } from "lucide-react";
+import { UpArrowIcon, StopIcon, CopyIcon, CheckCircleIcon, CopyIcon2 } from "../assets/icons";
 
 function Chat({
   darkTheme,
@@ -19,12 +19,15 @@ function Chat({
   handleSendMessage,
   chatMessages,
   typingMessage,
+  setTypingMessage,
+  isProcessing,
+  isTyping,
+  stopTyping,
 }) {
   const [copiedMessageIndex, setCopiedMessageIndex] = useState(null);
   const [lastCopiedCode, setLastCopiedCode] = useState(null);
   const textareaRef = useRef(null);
   const chatEndRef = useRef(null);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   const formatMath = (text) => {
     return text
@@ -102,9 +105,7 @@ function Chat({
 
   const sendMessage = async () => {
     if (!senderMessage.trim()) return;
-    setIsProcessing(true);
     await handleSendMessage();
-    setIsProcessing(false);
   };
 
   const handleKeyPress = (event) => {
@@ -149,9 +150,9 @@ function Chat({
                 size='small'
               >
                 {isCopied ? (
-                  <FaCheckCircle className='check-icon' />
+                  <CheckCircleIcon className='check-icon' />
                 ) : (
-                  <FaClipboard className='clipboard-icon' />
+                  <CopyIcon2 className='clipboard-icon' />
                 )}
               </IconButton>
             </TooltipWrapper>
@@ -218,9 +219,9 @@ function Chat({
                     size='small'
                   >
                     {isMessageCopied ? (
-                      <FaCheckCircle className='check-icon' />
+                      <CheckCircleIcon className='check-icon' />
                     ) : (
-                      <FaClone className='content-copy-icon' />
+                      <CopyIcon className='content-copy-icon' style={{ width: "28px", height: "28px" }} />
                     )}
                   </IconButton>
                 </TooltipWrapper>
@@ -228,19 +229,22 @@ function Chat({
             </div>
           );
         })}
+        {isTyping && !typingMessage && (
+          <div className="chat-message-container received">
+            <div className={`chat-message received ${darkTheme ? "dark-mode" : ""}`}>
+              <div className="typing-indicator"></div>
+            </div>
+          </div>
+        )}
         {typingMessage && (
           <div className='chat-message-container received'>
-            <div
-              className={`chat-message received ${
-                darkTheme ? "dark-mode" : ""
-              }`}
-            >
+            <div className={`chat-message received ${darkTheme ? "dark-mode" : ""}`}>
               <ReactMarkdown
                 components={components}
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}
               >
-                {typingMessage}
+                {formatMath(typingMessage)}
               </ReactMarkdown>
             </div>
           </div>
@@ -258,33 +262,28 @@ function Chat({
             onKeyPress={handleKeyPress}
           />
           <div className='send-button-container'>
-            <button type='button' onClick={sendMessage} className={`send-button ${darkTheme ? "dark-mode" : ""}`}>
-              {isProcessing ? (
-                <TooltipWrapper title='Processing...' arrow placement='top' darkTheme={darkTheme}>
-                  <Loader2
-                    className='loader'
-                    style={{ width: "20px", height: "20px" }}
-                  />
-                </TooltipWrapper>
+            <button type='button' onClick={(isProcessing || isTyping) ? stopTyping : sendMessage} className={`send-button ${darkTheme ? "dark-mode" : ""}`}>
+              {(isProcessing || isTyping) ? (
+                <StopIcon aria-label='Stop processing' style={{ width: "32px", height: "32px" }} />
               ) : (
-                <TooltipWrapper title='Send' arrow placement='top' darkTheme={darkTheme}>
-                  <SendIcon style={{ marginLeft: "2px" }} />
-                </TooltipWrapper>
+                <UpArrowIcon style={{ width: "32px", height: "32px" }} />
               )}
             </button>
           </div>
         </div>
         <div className={`chat-input-footer ${darkTheme ? "dark-mode" : ""}`}>
-          <a
-            className='github-link'
-            href='https://github.com/eflaatten/cxai'
-            target='_blank'
-            rel='noopener noreferrer'
-          >
-            <span className={`footer-text ${darkTheme ? "dark-mode" : ""}`}>
-              View on GitHub
-            </span>
-          </a>
+          <span className={`footer-text ${darkTheme ? "dark-mode" : ""}`}>
+            Made with ❤️ by{" "}
+            <a
+              className="wesbite-link"
+              href="https://www.cxfabric.io/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              CXFabric
+            </a>
+          </span>
         </div>
       </div>
     </div>

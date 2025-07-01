@@ -1,72 +1,69 @@
 :root {
-  /* Light Theme */
-  --color-primary: #6eb6ff;
-  --color-background-light: #ffffff;
-  --color-text-dark: #000000;
-  --color-chat-message-sent: #4781ff;
-  --color-chat-message-received: #e7e7e7;
-  --color-chat-box-light: #e0e0e0;
-  --color-chat-box-hover-light: #d0d0d0;
-  --color-scrollbar-thumb-light: #4781ff;
-  --color-scrollbar-thumb-hover-light: #3662cc;
-  --color-send-button-hover: rgb(117, 128, 215);
-  --color-settings-label-light: rgb(0, 0, 0);
-  --color-light-gray: #f9f9f9;
-  --color-light-blue: #3498db;
-  --color-hover-light: #e0e0e0;
-  --color-light-hover: #d2d2d2;
-  --color-light-active: #d2d2d2;
-  --color-light-gray: #f5f5f5;
-  --color-hover-light: #eee;
-  --color-send-button: rgb(0, 0, 0);
-  
-  /* Shared */
-  --color-copy-notification: #4caf50;
+  /* LIGHT THEME */
+  --color-primary-bg: #F2F6F9;
+  --color-secondary-bg: #FFFFFF;
+  --color-primary-font: #1E283E;
+  --color-secondary-font: #8392ab;
+  --color-selected-bg: #f0f0f0;
+  --color-node-border: #E2E8F0;
+  --color-input-bg: #FFFFFF;
+  --color-disabled-bg: #E9ECEF;
+  --color-chat-message-sent: #0f87ff;
+  --color-chat-message-received: #e5e5e5;
+  --color-send-button: #4677ff;
+  --color-send-button-hover: #2956d1;
+  --edit-icon-button: #fff;
+  --close-icon: #000;
+  --link-hover: #2a7cff;
   --color-code-block-header: #ffffff;
-  --color-black: #000;
-  --color-white: #fff;
-  --color-hover: #8194ff;
+
+  /* Existing variables for compatibility */
+  --color-primary: #6eb6ff;
+  --color-background-light: var(--color-primary-bg);
+  --color-text-dark: var(--color-primary-font);
+  --color-light-gray: var(--color-primary-bg);
+  --color-light-blue: #3498db;
+  --color-hover-light: #E2E8F0;
+  --color-light-hover: #E2E8F0;
+  --color-light-active: #E2E8F0;
 }
 
 body.dark-mode {
-  --color-background-dark: #151515;
-  --color-text-light: #ffffff;
-  --color-chat-message-received-dark: #202020;
-  --color-chat-box-dark: #242424;
-  --color-chat-box-hover-dark: #2e3f53;
-  --color-scrollbar-thumb-dark: #515151;
-  --color-scrollbar-thumb-hover-dark: #3d3d3d;
-  --color-scrollbar-track-dark: rgba(23, 23, 23, 0);
-  --color-settings-label-dark: rgb(230, 230, 230);
-  --color-settings-container-dark: #2c2c2c;
-  --color-typing-indicator-dark: #454545;
-  --color-gear-icon-dark: #ffffff;
-  --color-slider-dark: #393939;
-  --color-dark-blue: #2c3e50;
-  --color-hover-dark: #34495e;
-  --color-hover-dark: #06071c;
-  --color-sidenav-background-dark: #292929;
-  --color-sidenav-active-theme-color: #4a4a4a;
-  --color-code-block-header-dark: #000000;
-  --color-send-button-dark: rgb(255, 255, 255);
+  /* DARK THEME */
+  --color-primary-bg: #05111F;
+  --color-secondary-bg: #1E283E;
+  --color-primary-font: #ffffff;
+  --color-secondary-font: #A5ADC1;
+  --color-selected-bg: #444E63;
+  --color-node-border: #2D3748;
+  --color-input-bg: #454d62;
+  --color-disabled-bg: #454d62;
+  --color-chat-message-received: #2D3748;
+  --close-icon: #fff;
+  --color-code-block-header: #000000;
+
+  /* Existing variables for compatibility */
+  --color-background-dark: var(--color-primary-bg);
+  --color-text-light: var(--color-primary-font);
+  --color-light-gray: var(--color-primary-bg);
 }
 
 body {
   margin: 0;
   padding: 0;
-  color: var(--color-primary);
-  background-color: var(--color-background-light);
-  overflow-y: auto; 
+  color: var(--color-primary-font);
+  background-color: var(--color-primary-bg);
+  overflow-y: auto;
 }
 
 body.dark-mode {
-  background-color: var(--color-background-dark);
-  color: var(--color-text-light);
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary-font);
 }
 
 .App {
-  display: flex; 
-  flex-direction: column; 
-  min-height: 100vh; 
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   position: relative;
 }

@@ -1,10 +1,9 @@
 .chat-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   max-width: 1200px;
-  min-height: 100vh;
   margin: 0 auto;
   padding: 0 25px;
   box-sizing: border-box;
@@ -28,7 +27,7 @@
 
 .chat-messages {
   flex: 1;
-  padding: 10px 200px 10px 200px;
+  padding: 55px 200px 10px 200px;
   width: 100%;
   box-sizing: border-box;
   display: flex;
@@ -38,15 +37,15 @@
 
 @media (max-width: 1650px) {
   .chat-messages {
-    padding: 10px 100px 10px 100px;
+    padding: 55px 100px 10px 100px;
   }
 }
 
 @media (max-width: 768px) {
   .chat-messages {
-    padding: 10px 20px 10px 20px;
+    padding: 20px 10px 80px 10px;
     overflow-y: auto;
-    margin-bottom: 0;
+    margin-bottom: 80px;
   }
 }
 
@@ -85,7 +84,7 @@
 
 .chat-message.sent {
   background-color: var(--color-chat-message-sent);
-  color: var(--color-white);
+  color: white;
   margin-left: auto;
   margin-right: 17px;
   max-width: 100%;
@@ -101,7 +100,6 @@
 .chat-message.received {
   background-color: var(--color-chat-message-received);
   color: var(--color-black);
-  font-size: large;
   text-align: left;
   margin-right: auto;
   margin-left: 10px;
@@ -115,7 +113,7 @@
 }
 
 .chat-message.received.dark-mode {
-  background-color: var(--color-chat-message-received-dark);
+  background-color: var(--color-chat-message-received);
   color: var(--color-text-light);
 }
 
@@ -217,33 +215,37 @@ body.dark-mode .copy-message-button:hover {
   display: flex;
   align-items: center;
   width: 100%;
-  background: var(--color-chat-box-light);
+  background: var(--color-secondary-bg);
   border-radius: 15px;
   overflow: hidden;
 }
-
 .chat-input-container {
   position: sticky;
-  bottom: 0; 
-  z-index: 2; 
-  background-color: var(--color-chat-box-light);
+  bottom: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.45); /* more transparent */
   padding: 10px;
-  box-shadow: 0px -2px 4px rgba(0, 0, 0, 0.1);
   color: var(--color-text-dark);
   border-radius: 30px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s;
-  width: 65%;
+  width: 66%;
   min-height: auto;
   margin: 0 auto;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10), 0 2px 4px rgba(0,0,0,0.10);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
+  border: 1.5px solid rgba(180, 200, 255, 0.10);
+  transition: background 0.3s, border 0.3s;
 }
 
 .chat-input-container.dark-mode {
-  background: var(--color-chat-box-dark);
+  background: rgba(34, 44, 63, 0.32); /* more transparent */
   color: var(--color-text-light);
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
-  transition: background-color 0.3s;
+  box-shadow: 0 8px 32px 0 rgba(20, 30, 50, 0.22), 0 2px 4px rgba(0,0,0,0.28);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1.5px solid rgba(100, 130, 180, 0.13);
 }
+
 
 .chat-input-footer {
   display: flex;
@@ -251,35 +253,17 @@ body.dark-mode .copy-message-button:hover {
   justify-content: center;
   width: 100%;
   padding: 15px;
-  background-color: var(--color-background-light);
+  background-color: var(--color-primary-bg);
 }
 
 .footer-text {
   font-size: 14px;
-  color: var(--color-text-dark);
+  color: var(--color-primary-font);
   transition: color 0.3s;
 }
-
-.footer-text:hover {
-  color: var(--color-hover);
+.website-link:hover {
+  color: var(--link-hover);
 }
-.footer-text.dark-mode:hover {
-  color: var(--color-hover);
-}
-
-.footer-text.dark-mode {
-  color: var(--color-text-light);
-}
-
-.chat-input-footer.dark-mode {
-  background-color: var(--color-background-dark);
-}
-
-.github-link {
-  text-decoration: none;
-}
-
-
 @media (max-width: 1650px) {
   .chat-input-container {
     width: 80%;
@@ -290,39 +274,6 @@ body.dark-mode .copy-message-button:hover {
     box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.1);
   }
 }
-
-/* @media (max-width: 768px) {
-  .chat-input-container {
-    width: 95%; 
-    padding: 8px;
-    margin: 0 auto;
-    min-height: auto;
-    border-radius: 20px;
-    box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  .chat-box-wrapper {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .chat-box {
-    width: 100%; 
-    font-size: 16px;
-  }
-
-  .chat-input-footer {
-    padding: 10px;
-    width: 100%;
-  }
-
-  .footer-text {
-    font-size: 12px;
-    text-align: center;
-  }
-} */
-
 @media (max-width: 768px) {
   .chat-input-container {
     width: 100%;
@@ -346,7 +297,7 @@ body.dark-mode .copy-message-button:hover {
 
   .chat-box {
     width: 100%;
-    font-size: 16px;
+    font-size: 16px !important;
     border-radius: 0;
   }
 
@@ -359,9 +310,6 @@ body.dark-mode .copy-message-button:hover {
     display: none;
   }
 }
-
-
-
 .chat-box {
   width: 100%;
   background-color: transparent;
@@ -462,17 +410,14 @@ body.dark-mode .copy-message-button:hover {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
-.send-button.dark-mode {
-  background: var(--color-send-button-dark);
+.send-button:hover {
+  background-color: var(--color-send-button-hover);
 }
-
 .send-button svg {
   width: 18px;
   height: 18px;
   color: var(--color-white);
 }
-
 .send-button.dark-mode svg {
   color: var(--color-text-dark);
 }
@@ -485,8 +430,8 @@ body.dark-mode .copy-message-button:hover {
 @media (max-width: 768px) {
   .send-button {
     position: absolute;
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     right: 6px;
     bottom: 12px;
   }
@@ -537,10 +482,12 @@ body.dark-mode .copy-message-button:hover {
   font-size: 0.9em;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .code-block-header.dark-mode {
-  background-color: var(--color-code-block-header-dark);
+  background-color: var(--color-code-block-header);
   color: var(--color-text-light);
 }
 
@@ -659,4 +606,23 @@ pre, code {
 .light-mode pre, .light-mode code {
   /* background: #fff !important; */
   color: #222 !important;
+}
+.typing-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: #bbb;
+  border-radius: 50%;
+  animation: breathing 1.5s infinite ease-in-out;
+  margin: 10px 0;
+}
+
+@keyframes breathing {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.4);
+  }
 }
