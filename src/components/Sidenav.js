@@ -1,14 +1,31 @@
-import React, { useState } from "react";
-import TooltipWrapper from "./Tooltip";
-import Settings from '../pages/dialogs/Settings';
-import { MenuOpenIcon, ChatIcon, EditIcon, UpArrowIcon2, DownArrowIcon } from "../assets/icons";
+import React, { useState, useEffect } from "react";
+import { MenuOpenIcon, ChatIcon, EditIcon, UpArrowIcon2, DownArrowIcon, SettingsIcon, SunIcon, MoonIcon, NightIcon, LogoutIcon, CheckIcon } from "../assets/icons";
 import cxfab_logo from "../assets/logos/cxf_logo.png";
 import cxfab_circle from "../assets/logos/cxfab_circle.png";
 import './styles/Sidenav.css';
+import Avatar from '@mui/material/Avatar';
+import MobileSettingsModal from "./MobileSettingsModal";
 
-const Sidenav = ({ darkTheme, isOpen, setIsOpen }) => {
+const Sidenav = ({
+  darkTheme,
+  isOpen,
+  setIsOpen,
+  userEmail,
+  setDarkTheme = () => {},
+  }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  
+  const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
+  const [themeMenuOpen, setThemeMenuOpen] = useState(false);
+
+  // Sync dark mode class on body
+  useEffect(() => {
+    if (darkTheme) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkTheme]);
+
   // Sample chat data
 const chats = [
   { id: 1, name: "Client: Sarah Miller – Contract Review" },
@@ -37,7 +54,6 @@ const chats = [
   { id: 24, name: "Client: Michael Lee – Real Estate Closing" },
   { id: 25, name: "Team: Q3 Budget Planning, LONG CHAT NAMELONG CHAT NAMELONG CHAT NAMELONG CHAT NAME " },
 ];
-
 
   return (
     <div className={`sidenav${darkTheme ? " dark-mode" : ""}${isOpen ? " open" : ""}`}>
@@ -121,6 +137,49 @@ const chats = [
         </>
         )}
       </div>
+      <div className="sidenav-bottom-mobile" onClick={() => setMobileSettingsOpen(true)}>
+        <div className="sidenav-avatar-menu-item">
+          <Avatar className="sidenav-avatar" />
+          <span className="sidenav-avatar-email">{userEmail || 'user@email.com'}</span>
+        </div>
+      </div>
+      <MobileSettingsModal open={mobileSettingsOpen} onClose={() => { setMobileSettingsOpen(false); setThemeMenuOpen(false); }}>
+        <div className="mobile-settings-modal-content">
+          <div className="mobile-settings-avatar-row">
+            <Avatar className="sidenav-avatar" />
+            <span>{userEmail || 'user@email.com'}</span>
+          </div>
+          <button className="mobile-settings-menu-item" onClick={() => setMobileSettingsOpen(false)}>
+            <SettingsIcon className="header-avatar-menu-icon" />
+            <span>Settings</span>
+          </button>
+          <div className="mobile-settings-theme-dropdown">
+            <button className="mobile-settings-theme-dropdown-toggle" onClick={() => setThemeMenuOpen(o => !o)}>
+              <NightIcon className="header-avatar-menu-icon" />
+              <span>Theme</span>
+              <span style={{marginLeft:'auto'}}>
+                {themeMenuOpen ? <UpArrowIcon2 style={{marginTop: "5px"}} /> : <DownArrowIcon style={{marginTop: "5px"}} />}
+              </span>
+            </button>
+            {themeMenuOpen && (
+              <div className="mobile-settings-theme-menu">
+                <button className="mobile-settings-theme-menu-item" onClick={() => { setDarkTheme(false); setThemeMenuOpen(false); }}>
+                  <SunIcon className="header-avatar-menu-icon" /> Light
+                  { !darkTheme && <CheckIcon className="check" /> }
+                </button>
+                <button className="mobile-settings-theme-menu-item" onClick={() => { setDarkTheme(true); setThemeMenuOpen(false); }}>
+                  <MoonIcon className="header-avatar-menu-icon" /> Dark
+                  { darkTheme && <CheckIcon className="check" /> }
+                </button>
+              </div>
+            )}
+          </div>
+          <button className="mobile-settings-menu-item logout">
+            <LogoutIcon className="header-avatar-menu-icon" />
+            <span>Log out</span>
+          </button>
+        </div>
+      </MobileSettingsModal>
     </div>
   );
 };
