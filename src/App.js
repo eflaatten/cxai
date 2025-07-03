@@ -16,6 +16,7 @@ function App() {
   const [sidenavOpen, setSidenavOpen] = useState(true);
   const typingTimeoutRef = useRef(null);
   const typingBufferRef = useRef("");
+  const [isPreparingMessage, setIsPreparingMessage] = useState(false);
 
   useEffect(() => {
     if (darkTheme) {
@@ -27,68 +28,44 @@ function App() {
 
   const handleSenderMessageChange = (e) => {
     setSenderMessage(e.target.value);
+
   };
 
-  // const typeMessage = (message) => {
-  //   if (typingTimeoutRef.current) {
-  //     clearTimeout(typingTimeoutRef.current);
-  //   }
-
-  //   setIsTyping(true);
-  //   setTypingMessage("");
-  //   typingBufferRef.current = "";
-
-  //   let index = 0;
-
-  //   const typeNextChar = () => {
-  //     if (index < message.length) {
-  //       typingBufferRef.current += message.charAt(index);
-  //       setTypingMessage(typingBufferRef.current);
-  //       index++;
-  //       typingTimeoutRef.current = setTimeout(typeNextChar, 5);
-  //     } else {
-  //       setChatMessages((prevMessages) => [
-  //         ...prevMessages,
-  //         { text: message, type: "received" },
-  //       ]);
-  //       setTypingMessage("");
-  //       setIsTyping(false);
-  //       typingTimeoutRef.current = null;
-  //     }
-  //   };
-
-  //   typeNextChar();
-  // };
   const typeMessage = (message) => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
 
     setIsTyping(true);
+    setIsPreparingMessage(true);
     setTypingMessage("");
     typingBufferRef.current = "";
 
-    let index = 0;
-    const chunkSize = 5;  // smoother appearance
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsPreparingMessage(false);
 
-    const typeNextChunk = () => {
-      if (index < message.length) {
-        typingBufferRef.current += message.slice(index, index + chunkSize);
-        setTypingMessage(typingBufferRef.current);
-        index += chunkSize;
-        typingTimeoutRef.current = setTimeout(typeNextChunk, 20);
-      } else {
-        setChatMessages((prevMessages) => [
-          ...prevMessages,
-          { text: message, type: "received" },
-        ]);
-        setTypingMessage("");
-        setIsTyping(false);
-        typingTimeoutRef.current = null;
-      }
-    };
+      let index = 0;
+      const chunkSize = 5;
+  
+      const typeNextChunk = () => {
+        if (index < message.length) {
+          typingBufferRef.current += message.slice(index, index + chunkSize);
+          setTypingMessage(typingBufferRef.current);
+          index += chunkSize;
+          typingTimeoutRef.current = setTimeout(typeNextChunk, 20);
+        } else {
+          setChatMessages((prevMessages) => [
+            ...prevMessages,
+            { text: message, type: "received" },
+          ]);
+          setTypingMessage("");
+          setIsTyping(false);
+          typingTimeoutRef.current = null;
+        }
+      };
 
-    typeNextChunk();
+      typeNextChunk();
+    }, 600);
   };
 
 
@@ -114,6 +91,7 @@ function App() {
     setIsProcessing(true);
     setChatMessages(prev => [...prev, { text: messageToSend, type: "sent" }]);
     setSenderMessage("");
+    setIsPreparingMessage(true);
 
     if (isTyping) {
       setIsProcessing(false);
@@ -145,7 +123,7 @@ function App() {
   };
 
   return (
-    <div className={`App ${darkTheme ? "dark" : ""}`}>  
+    <div className={`App ${darkTheme ? "dark" : ""} ${sidenavOpen ? "sidenav-open" : ""}`}>
       <Header 
         isSidenavOpen={sidenavOpen} 
         onMenuClick={() => setSidenavOpen(true)} 
@@ -156,6 +134,7 @@ function App() {
       />
       <Sidenav 
         darkTheme={darkTheme} 
+        setDarkTheme={setDarkTheme}
         isOpen={sidenavOpen} 
         setIsOpen={setSidenavOpen} 
       />
@@ -179,6 +158,7 @@ function App() {
           isProcessing={isProcessing}
           isTyping={isTyping}
           stopTyping={stopTyping}
+          isPreparingMessage={isPreparingMessage}
         />
       )}
     </div>

@@ -1,6 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaClipboard, FaCheckCircle, FaClone } from "react-icons/fa";
-import SendIcon from "@mui/icons-material/Send";
 import TooltipWrapper from "./Tooltip";
 import IconButton from "@mui/material/IconButton";
 import ReactMarkdown from "react-markdown";
@@ -10,7 +8,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight, oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import "katex/dist/katex.min.css";
 import "./styles/Chat.css";
-import { UpArrowIcon, StopIcon, CopyIcon, CheckCircleIcon, CopyIcon2 } from "../assets/icons";
+import { UpArrowIcon, StopIcon, CopyIcon, CheckCircleIcon, CopyIcon2, RefreshIcon } from "../assets/icons";
 
 function Chat({
   darkTheme,
@@ -23,6 +21,7 @@ function Chat({
   isProcessing,
   isTyping,
   stopTyping,
+  isPreparingMessage,
 }) {
   const [copiedMessageIndex, setCopiedMessageIndex] = useState(null);
   const [lastCopiedCode, setLastCopiedCode] = useState(null);
@@ -219,22 +218,25 @@ function Chat({
                     size='small'
                   >
                     {isMessageCopied ? (
-                      <CheckCircleIcon className='check-icon' />
+                      <CheckCircleIcon className='check-icon' style={{ width: "28px", height: "28px" }} />
                     ) : (
                       <CopyIcon className='content-copy-icon' style={{ width: "28px", height: "28px" }} />
                     )}
                   </IconButton>
                 </TooltipWrapper>
+                {/* <IconButton
+                  aria-label="replay message"
+                  className="replay-message-button"
+                  size='small'
+                >
+                  <RefreshIcon style={{ width: "28px", height: "28px" }} />
+                </IconButton> */}
               </div>
             </div>
           );
         })}
         {isTyping && !typingMessage && (
-          <div className="chat-message-container received">
-            <div className={`chat-message received ${darkTheme ? "dark-mode" : ""}`}>
-              <div className="typing-indicator"></div>
-            </div>
-          </div>
+          <div className={`typing-indicator ${darkTheme ? "dark-mode" : ""}`}></div>
         )}
         {typingMessage && (
           <div className='chat-message-container received'>

@@ -66,4 +66,17 @@ body.dark-mode {
   flex-direction: column;
   min-height: 100vh;
   position: relative;
+  margin-left: 0;
+  transition: margin-left 0.28s cubic-bezier(0.7,0,0.3,1), background 0.16s;
+}
+
+.App.sidenav-open {
+  margin-left: var(--sidenav-width);
+}
+
+@media (max-width: 700px) {
+  .App,
+  .App.sidenav-open {
+    margin-left: 0;
+  }
 }

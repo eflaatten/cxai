@@ -1,7 +1,64 @@
+.sidenav-bottom-mobile {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .sidenav-bottom-mobile {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    background: var(--color-secondary-bg);
+    color: var(--color-primary-font);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+  }
+  .sidenav-avatar-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 10px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.13s;
+    border: none;
+    background: none;
+    width: 100%;
+    justify-content: flex-start;
+    color: var(--color-primary-font);
+  }
+  .sidenav-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    background: #bfc8e6;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+  .sidenav-avatar-email {
+    font-weight: 600;
+    color: var(--color-primary-font);
+    opacity: 0.95;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+  }
+  .sidenav-top {
+    padding-bottom: 64px;
+  }
+}
 :root {
   --sidenav-width: 260px;
   --sidenav-min-width: 64px;
-  --sidenav-mobile-width: min(85vw, 320px);
+  --sidenav-mobile-width: min(70vw, 280px);
   --sidenav-bg: var(--color-secondary-bg);
   --sidenav-font: var(--color-primary-font);
   --sidenav-chat-bg: var(--color-selected-bg);

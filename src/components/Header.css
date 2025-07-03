@@ -1,3 +1,8 @@
+@media (max-width: 700px) {
+  .header-avatar-wrapper.hide-on-mobile {
+    display: none !important;
+  }
+}
 .app-header {
   position: fixed;
   top: 0;

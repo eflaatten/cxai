@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Avatar from '@mui/material/Avatar';
-import { UserIcon, NightIcon, MoonIcon, SunIcon, LogoutIcon, RightArrowIcon, LeftArrowIcon, SettingsIcon, MenuIcon  } from "../assets/icons";
+import { CheckIcon, UserIcon, NightIcon, MoonIcon, SunIcon, LogoutIcon, RightArrowIcon, LeftArrowIcon, SettingsIcon, MenuIcon  } from "../assets/icons";
 import './Header.css';
 
 const Header = ({ isSidenavOpen, onMenuClick, userEmail, darkTheme, setDarkTheme }) => {
@@ -42,7 +42,7 @@ const Header = ({ isSidenavOpen, onMenuClick, userEmail, darkTheme, setDarkTheme
         )}
       </div>
       <div className="header-right">
-        <div className="header-avatar-wrapper" onClick={e => { e.stopPropagation(); setSubmenuOpen(o => !o); }}>
+        <div className="header-avatar-wrapper hide-on-mobile" onClick={e => { e.stopPropagation(); setSubmenuOpen(o => !o); }}>
           <Avatar className="header-avatar" />
           {submenuOpen && (
             <div className="header-avatar-menu" onClick={handleSubmenuClick}>
@@ -72,9 +72,11 @@ const Header = ({ isSidenavOpen, onMenuClick, userEmail, darkTheme, setDarkTheme
                   <div className="header-theme-menu" onClick={e => e.stopPropagation()}>
                     <div className="header-theme-menu-item" onClick={() => handleThemeChange(false)}>
                       <SunIcon className="header-avatar-menu-icon" /> Light
+                      { !darkTheme && <CheckIcon className="check" /> }
                     </div>
                     <div className="header-theme-menu-item" onClick={() => handleThemeChange(true)}>
                       <MoonIcon className="header-avatar-menu-icon" /> Dark
+                      { darkTheme && <CheckIcon className="check" /> }
                     </div>
                   </div>
                 )}
