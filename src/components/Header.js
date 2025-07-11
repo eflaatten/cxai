@@ -13,7 +13,7 @@ import {
   MenuIcon,
 } from "../assets/icons";
 //import ModelSwitcher from "./ModelSwitcher";
-import "./Header.css";c
+import "./Header.css";
 
 const Header = ({
   isSidenavOpen,
