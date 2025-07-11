@@ -36,7 +36,7 @@ const WelcomePage = ({
   return (
     <div className={`chat-container welcome-page ${darkTheme ? "dark-mode" : ""}`} style={{justifyContent: 'center', alignItems: 'center', display: 'flex', minHeight: '100vh'}}>
       <div style={{width: '100%', maxWidth: 1200, margin: '0 auto', textAlign: 'center'}}>
-        <h1 style={{marginBottom: 24}}>Ask Anything...</h1>
+        <h1 style={{marginBottom: 24}}>Welcome...</h1>
         <div className={`chat-input-container ${darkTheme ? "dark-mode" : ""}`}>
           <textarea
             ref={textareaRef}

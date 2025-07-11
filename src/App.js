@@ -5,6 +5,8 @@ import Chat from "./components/Chat";
 import Sidenav from "./components/Sidenav";
 import Header from "./components/Header";
 import WelcomePage from "./pages/WelcomePage";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [senderMessage, setSenderMessage] = useState("");
@@ -17,6 +19,7 @@ function App() {
   const typingTimeoutRef = useRef(null);
   const typingBufferRef = useRef("");
   const [isPreparingMessage, setIsPreparingMessage] = useState(false);
+  //const [provider, setProvider] = useState("openai");
 
   useEffect(() => {
     if (darkTheme) {
@@ -68,8 +71,6 @@ function App() {
     }, 600);
   };
 
-
-
   const stopTyping = () => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -85,9 +86,109 @@ function App() {
     setTypingMessage("");
   };
 
+  // Uncomment the following code if you want to use the OpenAI or Ollama API endpoints
+  // const getEndpoint = () =>
+  //   provider === "openai"
+  //     ? `https://cxf-executor-dev.cxfabric.io/restendpoint` +
+  //       `?tenant_id=${process.env.REACT_APP_TENANT_ID}` +
+  //       `&flow_id=${process.env.REACT_APP_FLOW_ID}`
+  //     : `${process.env.REACT_APP_OLLAMA_BASE_URL}/api/chat/completions`;
+
+  //   const buildHeaders = () => {
+  //     const base = { "Content-Type": "application/json" };
+  //     if (provider === "openai")
+  //       base.Authorization = `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`;
+  //     return base;
+  //   };
+
+  //   const getModelName = () => provider === "openai" ? "gpt-4o" : "llama3";
+
+  //   const handleSendMessage = async () => {
+  //     if (!senderMessage.trim()) return;
+
+  //     const messageToSend = senderMessage;
+  //     setChatMessages((prev) => [...prev, { text: messageToSend, type: "sent" }]);
+  //     setSenderMessage("");
+  //     setIsProcessing(true);
+  //     setIsPreparingMessage(true);
+
+  //     if (isTyping) {
+  //       setIsProcessing(false);
+  //       return;
+  //     }
+
+  //     try {
+  //       const endpoint = getEndpoint();
+  //       const headers = buildHeaders();
+  //       const body = JSON.stringify({
+  //         model: getModelName(),
+  //         messages: [{ role: "user", content: messageToSend }],
+  //         stream: true,
+  //       });
+
+  //       if (provider === "ollama") {
+  //         const response = await fetch(endpoint, {
+  //           method: "POST",
+  //           headers,
+  //           body,
+  //         });
+
+  //         const reader = response.body.getReader();
+  //         const decoder = new TextDecoder("utf-8");
+  //         let buffer = "";
+  //         let finalMessage = "";
+
+  //         setTypingMessage("");
+
+  //         while (true) {
+  //           const { value, done } = await reader.read();
+  //           if (done) break;
+
+  //           buffer += decoder.decode(value, { stream: true });
+  //           const chunks = buffer.split("\n\n");
+  //           buffer = chunks.pop();
+
+  //           for (const chunk of chunks) {
+  //             const line = chunk.replace(/^data:\s*/, "").trim();
+  //             if (line === "[DONE]") break;
+
+  //             try {
+  //               const json = JSON.parse(line);
+  //               const delta = json.choices?.[0]?.delta?.content;
+  //               if (delta) {
+  //                 finalMessage += delta;
+  //                 setTypingMessage(finalMessage);
+  //               }
+  //             } catch (err) {
+  //               console.warn("Stream parse error:", err, chunk);
+  //             }
+  //           }
+  //         }
+
+  //         setChatMessages((prev) => [...prev, { text: finalMessage, type: "received" }]);
+  //         setTypingMessage("");
+  //         setIsTyping(false);
+  //       } else {
+  //         const res = await axios.post(endpoint, JSON.parse(body), { headers });
+  //         const assistantMessage =
+  //           res.data?.choices?.[0]?.message?.content ||
+  //           res.data?.output ||
+  //           res.data?.result?.content ||
+  //           "I am unable to process your request. Please try again later.";
+  //         typeMessage(assistantMessage);
+  //       }
+  //     } catch (err) {
+  //       console.error("SendMessage error:", err);
+  //     } finally {
+  //       setIsProcessing(false);
+  //     }
+  //   };
+
+
+  // LIVE VERSION - CURRENT 
   const handleSendMessage = async () => {
     if (!senderMessage.trim()) return;
-    const messageToSend = senderMessage; // capture before clearing
+    const messageToSend = senderMessage;
     setIsProcessing(true);
     setChatMessages(prev => [...prev, { text: messageToSend, type: "sent" }]);
     setSenderMessage("");
@@ -124,6 +225,18 @@ function App() {
 
   return (
     <div className={`App ${darkTheme ? "dark" : ""} ${sidenavOpen ? "sidenav-open" : ""}`}>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={darkTheme ? "dark" : "light"}
+      />
       <Header 
         isSidenavOpen={sidenavOpen} 
         onMenuClick={() => setSidenavOpen(true)} 
@@ -131,6 +244,8 @@ function App() {
         userEmail={"user@email.com"} 
         darkTheme={darkTheme} 
         setDarkTheme={setDarkTheme} 
+        //provider={provider}
+        //setProvider={setProvider}
       />
       <Sidenav 
         darkTheme={darkTheme} 
