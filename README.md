@@ -55,7 +55,7 @@ REACT_APP_OPENAI_API_KEY=your_openai_api_key
 
 5. **Update your `.env` file:**
   ```env
-  REACT_APP_API_BASE_URL=http://127.0.0.1:11434
+  REACT_APP_API_BASE_URL=http://localhost:11434
   ```
 
 ---
