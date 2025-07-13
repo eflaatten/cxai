@@ -58,6 +58,16 @@ REACT_APP_OPENAI_API_KEY=your_openai_api_key
   REACT_APP_API_BASE_URL=http://localhost:11434
   ```
 
+6. **Add the model to the modelOptions variable**
+  eg.
+  ```
+  { label: "Qwen", value: "qwen2.5:1.5b" },
+  ```
+  and in the ModelSwitcher component in the modelIcons variable add
+  ```
+  "model": <OllamaIcon />,
+  ```
+
 ---
 
 ### Start the Application

@@ -105,13 +105,13 @@ function App() {
     setChatMessages((prev) => [...prev, { text: messageToSend, type: "sent" }]);
     setSenderMessage("");
     setIsProcessing(true);
-    
+
     try {
       const res = await axios.post(
         getEndpoint(),
         {
           type: "chat",
-          model: provider, // provider from frontend state
+          model: provider,
           messages: [{ role: "user", content: messageToSend }],
         },
         { headers: buildHeaders() }
