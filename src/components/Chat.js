@@ -9,6 +9,7 @@ import { oneLight, oneDark } from "react-syntax-highlighter/dist/esm/styles/pris
 import "katex/dist/katex.min.css";
 import "./styles/Chat.css";
 import { UpArrowIcon, StopIcon, CopyIcon, CheckCircleIcon, CopyIcon2, RefreshIcon } from "../assets/icons";
+import { Loader2 } from "lucide-react";
 
 function Chat({
   darkTheme,
@@ -22,6 +23,7 @@ function Chat({
   isTyping,
   stopTyping,
   isPreparingMessage,
+  typeMessage,
 }) {
   const [copiedMessageIndex, setCopiedMessageIndex] = useState(null);
   const [lastCopiedCode, setLastCopiedCode] = useState(null);
@@ -58,6 +60,11 @@ function Chat({
         setTimeout(() => setLastCopiedCode(null), 2000);
       })
       .catch((err) => console.error("Failed to copy code: ", err));
+  };
+
+  const handleReplayMessage = (messageText) => {
+    setTypingMessage("");
+    typeMessage(messageText);
   };
 
   useEffect(() => {
@@ -179,6 +186,7 @@ function Chat({
       <div className='chat-messages'>
         {chatMessages.map((message, index) => {
           const isMessageCopied = copiedMessageIndex === index;
+          const isAssistant = message.type === "received";
 
           return (
             <div
@@ -224,19 +232,48 @@ function Chat({
                     )}
                   </IconButton>
                 </TooltipWrapper>
-                {/* <IconButton
-                  aria-label="replay message"
-                  className="replay-message-button"
-                  size='small'
-                >
-                  <RefreshIcon style={{ width: "28px", height: "28px" }} />
-                </IconButton> */}
+                {/* {isAssistant && (
+                  <TooltipWrapper
+                    title="Replay message"
+                    arrow
+                    darkTheme={darkTheme}
+                  >
+                    <IconButton
+                      aria-label="replay message"
+                      className="replay-message-button"
+                      size='small'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleReplayMessage(message.text);
+                      }}
+                    >
+                      <RefreshIcon style={{ width: "28px", height: "28px" }} />
+                    </IconButton>
+                  </TooltipWrapper>
+                )} */}
               </div>
             </div>
           );
         })}
-        {isTyping && !typingMessage && (
-          <div className={`typing-indicator ${darkTheme ? "dark-mode" : ""}`}></div>
+        {isPreparingMessage && (
+          <div className='chat-message-container received'>
+            <div className={`chat-message received ${darkTheme ? "dark-mode" : ""} thinking-row`}>
+              <Loader2 className="loader" />
+              <span className="thinking-text">
+                <span>T</span>
+                <span>h</span>
+                <span>i</span>
+                <span>n</span>
+                <span>k</span>
+                <span>i</span>
+                <span>n</span>
+                <span>g</span>
+                <span>.</span>
+                <span>.</span>
+                <span>.</span>
+              </span>
+            </div>
+          </div>
         )}
         {typingMessage && (
           <div className='chat-message-container received'>

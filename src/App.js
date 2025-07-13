@@ -52,12 +52,10 @@ function App() {
     }
     
     setIsTyping(true);
-    setIsPreparingMessage(true);
     setTypingMessage("");
     typingBufferRef.current = "";
     
     typingTimeoutRef.current = setTimeout(() => {
-      setIsPreparingMessage(false);
       
       let index = 0;
       const chunkSize = 5;
@@ -105,6 +103,7 @@ function App() {
     setChatMessages((prev) => [...prev, { text: messageToSend, type: "sent" }]);
     setSenderMessage("");
     setIsProcessing(true);
+    setIsPreparingMessage(true);
 
     try {
       const res = await axios.post(
@@ -113,14 +112,17 @@ function App() {
           type: "chat",
           model: provider,
           messages: [{ role: "user", content: messageToSend }],
+          stream: true,
         },
         { headers: buildHeaders() }
       );
       
       const assistantMessage = res.data?.choices?.[0]?.message?.content || "I am unable to process your request. Please try again later.";
+      setIsPreparingMessage(false);
       typeMessage(assistantMessage);
     } catch (err) {
       console.error("SendMessage error:", err);
+      setIsPreparingMessage(false);
       typeMessage("Error occurred while processing your message.");
     } finally {
       setIsProcessing(false);
@@ -201,6 +203,7 @@ function App() {
           isTyping={isTyping}
           stopTyping={stopTyping}
           isPreparingMessage={isPreparingMessage}
+          typeMessage={typeMessage}
         />
       )}
     </div>
