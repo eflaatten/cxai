@@ -12,7 +12,7 @@ import {
   SettingsIcon,
   MenuIcon,
 } from "../assets/icons";
-//import ModelSwitcher from "./ModelSwitcher";
+import ModelSwitcher from "./ModelSwitcher";
 import "./Header.css";
 
 const Header = ({
@@ -23,6 +23,7 @@ const Header = ({
   setDarkTheme,
   provider,
   setProvider,
+  modelOptions,
 }) => {
   const [submenuOpen, setSubmenuOpen] = useState(false);
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
@@ -64,7 +65,11 @@ const Header = ({
             <MenuIcon fontSize="medium" />
           </button>
         )}
-        {/* <ModelSwitcher provider={provider} setProvider={setProvider} /> */}
+        <ModelSwitcher
+          provider={provider}
+          setProvider={setProvider}
+          modelOptions={modelOptions}
+        />
       </div>
       <div className="header-right">
         <div

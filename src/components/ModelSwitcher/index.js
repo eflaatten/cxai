@@ -5,17 +5,22 @@ import {
   UpArrowIcon2
 } from "../../assets/icons";
 import "../styles/ModelSwitcher.css";
-import { CpuIcon, CloudIcon } from "lucide-react";
-import { OllamaIcon, OpenAIIcon } from "../../assets/icons";
+import { OllamaIcon, OpenAIIcon, MakoNetworksIcon } from "../../assets/icons";
 import { toast } from "react-toastify";
 
-const ModelSwitcher = ({ provider, setProvider }) => {
+const ModelSwitcher = ({ provider, setProvider, modelOptions }) => {
   const [open, setOpen] = useState(false);
+  const currentModel = modelOptions.find(m => m.value === provider);
+
+  const modelIcons = {
+    "gpt-4o": <OpenAIIcon />,
+    "llama3.2:1b": <MakoNetworksIcon />,
+  };
 
   const choose = next => {
     setProvider(next);
     setOpen(false);
-    toast.success(`Switched to ${next === "openai" ? "OpenAI" : "Ollama"} provider`, {
+    toast.success(`Switched to ${modelOptions.find(m => m.value === next)?.label || next} provider`, {
       position: "top-right",
       autoClose: 2000,
       hideProgressBar: false,
@@ -36,23 +41,26 @@ const ModelSwitcher = ({ provider, setProvider }) => {
   return (
     <div className="model-switcher-wrapper" onClick={e => e.stopPropagation()}>
       <button className="model-switcher-btn" onClick={() => setOpen(o => !o)}>
-        {provider === "openai" ? <OpenAIIcon /> : <OllamaIcon />}
+        {modelIcons[provider] || <OllamaIcon />}
         <span className="model-switcher-label">
-          {provider === "openai" ? "OpenAI" : "Ollama"}
+          {currentModel?.label || provider}
         </span>
         {open ? <UpArrowIcon2 className="caret" /> : <DownArrowIcon className="caret" />}
       </button>
 
       {open && (
         <div className="model-switcher-menu">
-          <div className="model-switcher-menu-item" onClick={() => choose("openai")}>
-            <OpenAIIcon className="model-switcher-menu-icon" /> OpenAI
-            {provider === "openai" && <CheckIcon className="check" />}
-          </div>
-          <div className="model-switcher-menu-item" onClick={() => choose("ollama")}>
-            <OllamaIcon className="model-switcher-menu-icon" /> Ollama
-            {provider === "ollama" && <CheckIcon className="check" />}
-          </div>
+          {modelOptions.map(opt => (
+            <div
+              key={opt.value}
+              className="model-switcher-menu-item"
+              onClick={() => choose(opt.value)}
+            >
+              {modelIcons[opt.value] || <OllamaIcon className="model-switcher-menu-icon" />}
+              {opt.label}
+              {provider === opt.value && <CheckIcon className="check" />}
+            </div>
+          ))}
         </div>
       )}
     </div>
