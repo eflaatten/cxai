@@ -106,18 +106,29 @@ function App() {
     setIsPreparingMessage(true);
 
     try {
-      const res = await axios.post(
-        getEndpoint(),
-        {
-          type: "chat",
-          model: provider,
-          messages: [{ role: "user", content: messageToSend }],
-          stream: true,
-        },
-        { headers: buildHeaders() }
-      );
-      
-      const assistantMessage = res.data?.choices?.[0]?.message?.content || "I am unable to process your request. Please try again later.";
+      let assistantMessage = "";
+
+      if (provider === "llama3.2:1b") {
+        const res = await axios.post(
+          //"https://cxai-backend-dev.cxfabric.io/api/rag",
+          getEndpoint(),
+          { model: provider, question: messageToSend }
+        );
+        assistantMessage = res.data?.choices?.[0]?.message?.content || "I am unable to process your request. Please try again later.";
+      } else {
+        const res = await axios.post(
+          getEndpoint(),
+          {
+            type: "chat",
+            model: provider,
+            messages: [{ role: "user", content: messageToSend }],
+            stream: true,
+          },
+          { headers: buildHeaders() }
+        );
+        assistantMessage = res.data?.choices?.[0]?.message?.content || "I am unable to process your request. Please try again later.";
+    }
+
       setIsPreparingMessage(false);
       typeMessage(assistantMessage);
     } catch (err) {
