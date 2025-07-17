@@ -238,39 +238,40 @@
   width: 100%;
   margin-top: 30px;
   margin-right: 8px !important;
-  background: #4f6dff;
-  color: #fff;
+  background: transparent;
+  color: var(--color-primary-font) !important;
+  opacity: 0.7;
   border: none;
   border-radius: 7px;
   font-size: 1rem;
   font-weight: 700;
-  padding: 10px 0 10px 0;
+  padding: 10px 0 10px 20px;
   cursor: pointer;
-  box-shadow: 0 2px 12px 0 rgba(110,182,255,0.07);
   transition: background 0.13s;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 7px;
 }
+.new-chat-btn.dark-mode {
+  background: var(--color-secondary-bg);
+  color: var(--color-primary-font) !important;
+}
 .new-chat-btn:hover {
-  background: #3c58e4;
+  background: var(--color-selected-bg);
 }
 .new-chat-btn {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.new-chat-btn .edit-icon {
-  --edit-icon-color: #fff;
-}
 .new-chat-icon {
   width: 20px;
   height: 20px;
 }
 .new-chat-btn.minimized {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   padding: 0;
   justify-content: center;
   background: none;
@@ -284,10 +285,13 @@
   border: none;
   transition: background 0.13s;
 }
+.new-chat-btn.minimized:hover {
+  background: var(--color-selected-bg);
+}
 .new-chat-btn.minimized .edit-icon {
   --edit-icon-color: var(--color-primary-font);
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
 }
 .sidenav-bottom {
   margin-top: auto;
@@ -334,9 +338,6 @@
   letter-spacing: 0.01em;
   transition: opacity 0.13s;
 }
-.sidenav:not(.open) {
-  background: none;
-}
 .sidenav:not(.open) .settings-text {
   opacity: 0;
   width: 0;
@@ -349,7 +350,7 @@
   padding-right: 0;
 }
 .sidenav:not(.open) .chats-dropdown-btn,
-.sidenav:not(.open) .new-chat-btn,
+/* .sidenav:not(.open) .new-chat-btn, */
 .sidenav:not(.open) .dropdown-label {
   display: none !important;
 }
@@ -454,6 +455,11 @@
     box-sizing: border-box;
   }
 
+  .new-chat-btn:hover,
+  .chats-dropdown-btn:hover {
+    background: none;
+  }
+
   .sidenav-backdrop {
     position: fixed;
     top: 0;
@@ -466,6 +472,12 @@
     cursor: pointer;
     transition: opacity 0.18s;
   }
+
+  .sidenav-toggle-btn:hover {
+    background: none;
+  }
+
+  
 }
 ::-webkit-scrollbar {
   width: 6px;

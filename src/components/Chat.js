@@ -142,12 +142,12 @@ function Chat({
             <span className='language-label'>{language || "code"}</span>
 
             <TooltipWrapper
-              title={isCopied ? "Copied!" : "Copy code"}
+              title={isCopied ? "Copied!" : "Copy"}
               arrow
               darkTheme={darkTheme}
             >
               <IconButton
-                aria-label={isCopied ? "Copied!" : "Copy code"}
+                aria-label={isCopied ? "Copied!" : "Copy"}
                 className='code-block-copy-button'
                 onClick={(e) => {
                   e.stopPropagation();
@@ -212,7 +212,7 @@ function Chat({
               </div>
               <div className='chat-actions-container'>
                 <TooltipWrapper
-                  title={isMessageCopied ? "Copied!" : "Copy message"}
+                  title={isMessageCopied ? "Copied!" : "Copy"}
                   arrow
                   darkTheme={darkTheme}
                 >
@@ -311,7 +311,7 @@ function Chat({
           </div>
         </div>
         <div className={`chat-input-footer ${darkTheme ? "dark-mode" : ""}`}>
-          <span className={`footer-text ${darkTheme ? "dark-mode" : ""}`}>
+          {/* <span className={`footer-text ${darkTheme ? "dark-mode" : ""}`}>
             Made with ❤️ by{" "}
             <a
               className="wesbite-link"
@@ -322,7 +322,7 @@ function Chat({
             >
               CXFabric
             </a>
-          </span>
+          </span> */}
         </div>
       </div>
     </div>

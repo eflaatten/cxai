@@ -160,4 +160,8 @@
   .app-header.with-sidenav-min {
     margin-left: 0;
   }
+
+  .header-menu-btn:hover {
+    background: none;
+  }
 }

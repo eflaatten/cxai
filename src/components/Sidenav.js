@@ -5,6 +5,7 @@ import cxfab_circle from "../assets/logos/cxfab_circle.png";
 import './styles/Sidenav.css';
 import Avatar from '@mui/material/Avatar';
 import MobileSettingsModal from "./MobileSettingsModal";
+import TooltipWrapper from "./Tooltip";
 
 const Sidenav = ({
   darkTheme,
@@ -12,6 +13,7 @@ const Sidenav = ({
   setIsOpen,
   userEmail,
   setDarkTheme = () => {},
+  handleNewChat = () => {},
   }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
@@ -96,14 +98,16 @@ const Sidenav = ({
 
           <div className="sidenav-settings-container">
             {isOpen ? (
-              <button className="new-chat-btn">
+              <button className={`new-chat-btn${darkTheme ? " dark-mode" : ""}`} onClick={handleNewChat}>
                 <EditIcon className="edit-icon" />
-                New Chat
+                <span className="new-chat-text">New Chat</span>
               </button>
             ) : (
-              <button className="new-chat-btn minimized">
+              <TooltipWrapper title="New Chat" placement="right" arrow darkTheme={darkTheme}>
+              <button className="new-chat-btn minimized" onClick={handleNewChat}>
                 <EditIcon className="edit-icon" />
               </button>
+              </TooltipWrapper>
             )}
           </div>
 
