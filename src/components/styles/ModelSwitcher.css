@@ -3,6 +3,13 @@
   margin-left: 8px;
 }
 
+.model-switcher-menu-icon {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
 .model-switcher-btn {
   display: flex;
   align-items: center;
@@ -57,9 +64,9 @@
 }
 
 .check {
-  margin-left: auto; 
-  color: #6e87ff; 
-  font-size: 18px; 
+  margin-left: auto;
+  color: #6e87ff;
+  font-size: 18px;
 }
 
 .caret {

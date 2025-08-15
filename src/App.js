@@ -26,24 +26,24 @@ function App() {
 
   const modelOptions = [
     { label: "OpenAI", value: "gpt-4o" },
-    { label: "Mako Networks", value: "llama3.2:1b" },
+    { label: "CXFabric AI", value: "llama3.2:1b" },
   ];
 
-  
+
   const getEndpoint = () =>
     `https://cxf-executor-dev.cxfabric.io/restendpoint` +
   `?tenant_id=${process.env.REACT_APP_TENANT_ID}` +
   `&flow_id=${process.env.REACT_APP_FLOW_ID}`;
-  
+
   const buildHeaders = () => ({
     "Content-Type": "application/json",
     Authorization: `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`,
   });
-  
+
   const handleProviderChange = async (newProvider) => {
     setProvider(newProvider);
   };
-  
+
   const handleSenderMessageChange = (e) => {
     setSenderMessage(e.target.value);
   };
@@ -57,21 +57,21 @@ function App() {
     setTypingMessage("");
     setIsPreparingMessage(false);
   }
-  
+
   const typeMessage = (message) => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
     }
-    
+
     setIsTyping(true);
     setTypingMessage("");
     typingBufferRef.current = "";
-    
+
     typingTimeoutRef.current = setTimeout(() => {
-      
+
       let index = 0;
       const chunkSize = 5;
-      
+
       const typeNextChunk = () => {
         if (index < message.length) {
           typingBufferRef.current += message.slice(index, index + chunkSize);
@@ -88,11 +88,11 @@ function App() {
           typingTimeoutRef.current = null;
         }
       };
-      
+
       typeNextChunk();
     }, 400);
   };
-  
+
   const stopTyping = () => {
     if (typingTimeoutRef.current) {
       clearTimeout(typingTimeoutRef.current);
@@ -107,10 +107,10 @@ function App() {
     setIsTyping(false);
     setTypingMessage("");
   };
-  
+
   const handleSendMessage = async () => {
     if (!senderMessage.trim()) return;
-    
+
     const messageToSend = senderMessage;
     setChatMessages((prev) => [...prev, { text: messageToSend, type: "sent" }]);
     setSenderMessage("");
@@ -122,8 +122,8 @@ function App() {
 
       if (provider === "llama3.2:1b") {
         const res = await axios.post(
-          //"https://cxai-backend-dev.cxfabric.io/api/rag",
           getEndpoint(),
+          //"http://0.0.0.0:8000/api/rag",
           { model: provider, question: messageToSend }
         );
         assistantMessage = res.data?.choices?.[0]?.message?.content || "I am unable to process your request. Please try again later.";
@@ -151,7 +151,7 @@ function App() {
       setIsProcessing(false);
     }
   };
-  
+
   useEffect(() => {
     if (darkTheme) {
       document.body.classList.add("dark-mode");
@@ -170,7 +170,7 @@ function App() {
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  
+
   return (
     <div className={`App ${darkTheme ? "dark" : ""} ${sidenavOpen ? "sidenav-open" : ""}`}>
       <ToastContainer

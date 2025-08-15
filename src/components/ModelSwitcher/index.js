@@ -7,6 +7,7 @@ import {
 import "../styles/ModelSwitcher.css";
 import { OllamaIcon, OpenAIIcon, MakoNetworksIcon } from "../../assets/icons";
 import { toast } from "react-toastify";
+import cxf_circle from "../../assets/logos/cxfab_circle1.png";
 
 const ModelSwitcher = ({ provider, setProvider, modelOptions }) => {
   const [open, setOpen] = useState(false);
@@ -14,7 +15,7 @@ const ModelSwitcher = ({ provider, setProvider, modelOptions }) => {
 
   const modelIcons = {
     "gpt-4o": <OpenAIIcon />,
-    "llama3.2:1b": <MakoNetworksIcon />,
+    "llama3.2:1b": <img src={cxf_circle} alt="CXFabric Logo" className="model-switcher-menu-icon" />,
   };
 
   const choose = next => {
