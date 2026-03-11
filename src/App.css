@@ -15,6 +15,8 @@
   --close-icon: #000;
   --link-hover: #2a7cff;
   --color-code-block-header: #ffffff;
+  --model-switcher-hover-bg: #e8e5e5;
+  --chat-box-border-gradient: linear-gradient(90deg, #72c3f8, #0679f3);
 
   /* Existing variables for compatibility */
   --color-primary: #6eb6ff;
@@ -29,17 +31,21 @@
 
 body.dark-mode {
   /* DARK THEME */
-  --color-primary-bg: #05111F;
-  --color-secondary-bg: #1E283E;
+  --color-primary-bg: #000000;
+  --color-secondary-bg: #111117;
   --color-primary-font: #ffffff;
-  --color-secondary-font: #A5ADC1;
-  --color-selected-bg: #444E63;
+  --color-secondary-font: #cacbcb;
+  --color-selected-bg: #202228be;
   --color-node-border: #2D3748;
-  --color-input-bg: #454d62;
-  --color-disabled-bg: #454d62;
+  --color-input-bg: #17171e;
+  --color-disabled-bg: #1f2126;
   --color-chat-message-received: #2D3748;
   --close-icon: #fff;
   --color-code-block-header: #000000;
+  --color-send-button: #0048ff;
+  --color-send-button-hover: #0335b5;
+  --model-switcher-hover-bg: #222227;
+  --chat-box-border-gradient: linear-gradient(90deg, #5c7ef8, #013ef5);
 
   /* Existing variables for compatibility */
   --color-background-dark: var(--color-primary-bg);

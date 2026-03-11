@@ -265,8 +265,25 @@ body.dark-mode .copy-message-button:hover {
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.10), 0 2px 4px rgba(0,0,0,0.10);
   backdrop-filter: blur(22px) saturate(180%);
   -webkit-backdrop-filter: blur(22px) saturate(180%);
-  border: 1.5px solid rgba(180, 200, 255, 0.10);
+  border: none;
+  position: relative;
   transition: background 0.3s, border 0.3s;
+}
+
+.chat-input-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: 30px;
+  background: var(--chat-box-border-gradient);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .chat-input-container.dark-mode {
@@ -275,7 +292,6 @@ body.dark-mode .copy-message-button:hover {
   box-shadow: none;
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1.5px solid rgba(100, 129, 180, 0.26);
 }
 
 
@@ -450,11 +466,11 @@ body.dark-mode .copy-message-button:hover {
   color: var(--color-white);
 }
 .send-button.dark-mode svg {
-  color: var(--color-text-dark);
+  color: var(--color-white);
 }
 
 .send-button:disabled {
-  background-color: grey;
+  background-color: rgb(13, 28, 83);
   cursor: not-allowed;
 }
 

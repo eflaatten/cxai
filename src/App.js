@@ -33,7 +33,8 @@ function App() {
   const getEndpoint = () =>
     `https://cxf-executor-dev.cxfabric.io/restendpoint` +
   `?tenant_id=${process.env.REACT_APP_TENANT_ID}` +
-  `&flow_id=${process.env.REACT_APP_FLOW_ID}`;
+  `&flow_id=${process.env.REACT_APP_FLOW_ID}` +
+  `&targetUserId=${process.env.REACT_APP_USER_ID}`;
 
   const buildHeaders = () => ({
     "Content-Type": "application/json",

@@ -111,7 +111,7 @@ const Sidenav = ({
             )}
           </div>
 
-          {isOpen && (
+          {/* {isOpen && (
           <>
             <div className="chats-dropdown-section">
               <button
@@ -146,7 +146,7 @@ const Sidenav = ({
               )}
             </div>
           </>
-          )}
+          )} */}
         </div>
         <div className="sidenav-bottom-mobile" onClick={() => setMobileSettingsOpen(true)}>
           <div className="sidenav-avatar-menu-item">

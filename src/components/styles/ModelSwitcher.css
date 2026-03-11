@@ -23,7 +23,7 @@
   cursor: pointer;
   transition: background 0.13s;
 }
-.model-switcher-btn:hover { background: var(--color-selected-bg); }
+.model-switcher-btn:hover { background: var(--model-switcher-hover-bg); }
 
 .model-switcher-menu {
   position: absolute;
