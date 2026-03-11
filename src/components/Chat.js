@@ -8,7 +8,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneLight, oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import "katex/dist/katex.min.css";
 import "./styles/Chat.css";
-import { UpArrowIcon, StopIcon, CopyIcon, CheckCircleIcon, CopyIcon2, RefreshIcon } from "../assets/icons";
+import { UpArrowIcon, StopIcon, CopyIcon, CheckCircleIcon, CopyIcon2 } from "../assets/icons";
 import { Loader2 } from "lucide-react";
 
 function Chat({
@@ -62,10 +62,10 @@ function Chat({
       .catch((err) => console.error("Failed to copy code: ", err));
   };
 
-  const handleReplayMessage = (messageText) => {
-    setTypingMessage("");
-    typeMessage(messageText);
-  };
+  // const handleReplayMessage = (messageText) => {
+  //   setTypingMessage("");
+  //   typeMessage(messageText);
+  // };
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -186,7 +186,7 @@ function Chat({
       <div className='chat-messages'>
         {chatMessages.map((message, index) => {
           const isMessageCopied = copiedMessageIndex === index;
-          const isAssistant = message.type === "received";
+          //const isAssistant = message.type === "received";
 
           return (
             <div

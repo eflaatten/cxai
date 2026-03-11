@@ -5,7 +5,7 @@ import {
   UpArrowIcon2
 } from "../../assets/icons";
 import "../styles/ModelSwitcher.css";
-import { OllamaIcon, OpenAIIcon, MakoNetworksIcon } from "../../assets/icons";
+import { OllamaIcon, OpenAIIcon } from "../../assets/icons";
 import { toast } from "react-toastify";
 import cxf_circle from "../../assets/logos/cxfab_circle1.png";
 

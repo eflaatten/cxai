@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MenuOpenIcon, ChatIcon, EditIcon, UpArrowIcon2, DownArrowIcon, SettingsIcon, SunIcon, MoonIcon, NightIcon, LogoutIcon, CheckIcon } from "../assets/icons";
+import { MenuOpenIcon, EditIcon, UpArrowIcon2, DownArrowIcon, SettingsIcon, SunIcon, MoonIcon, NightIcon, LogoutIcon, CheckIcon } from "../assets/icons";
 import cxfab_logo from "../assets/logos/cxf_logo.png";
 import cxfab_circle from "../assets/logos/cxfab_circle.png";
 import './styles/Sidenav.css';
@@ -15,7 +15,7 @@ const Sidenav = ({
   setDarkTheme = () => {},
   handleNewChat = () => {},
   }) => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  //const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileSettingsOpen, setMobileSettingsOpen] = useState(false);
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
 
@@ -28,33 +28,33 @@ const Sidenav = ({
   }, [darkTheme]);
 
   // Sample chat data
-  const chats = [
-    { id: 1, name: "Client: Sarah Miller – Contract Review" },
-    { id: 2, name: "Research – Texas Non-Compete Statutes" },
-    { id: 3, name: "Client: Acme Corp – MSA Negotiations" },
-    { id: 4, name: "Quick Ask: PTO Policy Template" },
-    { id: 5, name: "Client: Brian O’Connor – Employment Inquiry" },
-    { id: 6, name: "Research – Trademark Application Steps" },
-    { id: 7, name: "Client: Jane Lee – Lease Agreement Draft" },
-    { id: 8, name: "Team: Litigation Prep Notes" },
-    { id: 9, name: "Client: Robert Yu – IP Transfer Questions" },
-    { id: 10, name: "Draft Email: Opposing Counsel Follow-Up" },
-    { id: 11, name: "Client: Delta Partners – NDA Terms" },
-    { id: 12, name: "Research – Texas Discovery Deadlines" },
-    { id: 13, name: "Team: Friday Standup Recap" },
-    { id: 14, name: "Client: Ingrid Patel – Divorce Consultation" },
-    { id: 15, name: "Draft: Court Motion for Continuance" },
-    { id: 16, name: "Client: Omar Reyes – Billing Question" },
-    { id: 17, name: "Research – Fair Use Copyright" },
-    { id: 18, name: "Client: Ava Robinson – Demand Letter" },
-    { id: 19, name: "Team: Onboarding Checklist" },
-    { id: 20, name: "Client: Leo Chang – Case Status Update" },
-    { id: 21, name: "Research – Arbitration vs Mediation" },
-    { id: 22, name: "Client: Harper Group – Corporate Minutes" },
-    { id: 23, name: "Draft: Retainer Agreement Template" },
-    { id: 24, name: "Client: Michael Lee – Real Estate Closing" },
-    { id: 25, name: "Team: Q3 Budget Planning, LONG CHAT NAMELONG CHAT NAMELONG CHAT NAMELONG CHAT NAME " },
-  ];
+  // const chats = [
+  //   { id: 1, name: "Client: Sarah Miller – Contract Review" },
+  //   { id: 2, name: "Research – Texas Non-Compete Statutes" },
+  //   { id: 3, name: "Client: Acme Corp – MSA Negotiations" },
+  //   { id: 4, name: "Quick Ask: PTO Policy Template" },
+  //   { id: 5, name: "Client: Brian O’Connor – Employment Inquiry" },
+  //   { id: 6, name: "Research – Trademark Application Steps" },
+  //   { id: 7, name: "Client: Jane Lee – Lease Agreement Draft" },
+  //   { id: 8, name: "Team: Litigation Prep Notes" },
+  //   { id: 9, name: "Client: Robert Yu – IP Transfer Questions" },
+  //   { id: 10, name: "Draft Email: Opposing Counsel Follow-Up" },
+  //   { id: 11, name: "Client: Delta Partners – NDA Terms" },
+  //   { id: 12, name: "Research – Texas Discovery Deadlines" },
+  //   { id: 13, name: "Team: Friday Standup Recap" },
+  //   { id: 14, name: "Client: Ingrid Patel – Divorce Consultation" },
+  //   { id: 15, name: "Draft: Court Motion for Continuance" },
+  //   { id: 16, name: "Client: Omar Reyes – Billing Question" },
+  //   { id: 17, name: "Research – Fair Use Copyright" },
+  //   { id: 18, name: "Client: Ava Robinson – Demand Letter" },
+  //   { id: 19, name: "Team: Onboarding Checklist" },
+  //   { id: 20, name: "Client: Leo Chang – Case Status Update" },
+  //   { id: 21, name: "Research – Arbitration vs Mediation" },
+  //   { id: 22, name: "Client: Harper Group – Corporate Minutes" },
+  //   { id: 23, name: "Draft: Retainer Agreement Template" },
+  //   { id: 24, name: "Client: Michael Lee – Real Estate Closing" },
+  //   { id: 25, name: "Team: Q3 Budget Planning, LONG CHAT NAMELONG CHAT NAMELONG CHAT NAMELONG CHAT NAME " },
+  // ];
 
   return (
     <>

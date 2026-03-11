@@ -7,7 +7,7 @@ import Header from "./components/Header";
 import WelcomePage from "./pages/WelcomePage";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useSwipe } from "./utils/useSwipe";
+// import { useSwipe } from "./utils/useSwipe";
 
 function App() {
   const [senderMessage, setSenderMessage] = useState("");
@@ -19,6 +19,7 @@ function App() {
   const [sidenavOpen, setSidenavOpen] = useState(true);
   const [isPreparingMessage, setIsPreparingMessage] = useState(false);
   const [provider, setProvider] = useState("gpt-4o");
+  // eslint-disable-next-line
   const [newChat, setNewChat] = useState(false);
 
   const typingTimeoutRef = useRef(null);
@@ -205,7 +206,7 @@ function App() {
         provider={provider}
         setProvider={handleProviderChange}
         modelOptions={modelOptions}
-        handleNewChat={handleNewChat}
+        handleNewChat={handleNewChat} 
       />
       {chatMessages.length === 0 ? (
         <WelcomePage
