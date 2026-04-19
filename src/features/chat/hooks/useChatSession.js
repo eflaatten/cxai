@@ -80,14 +80,32 @@ export function useChatSession(provider) {
           return;
         }
 
-        nextIndex = Math.min(nextIndex + (nextIndex < 120 ? 3 : 6), text.length);
+        const currentCharacter = text[nextIndex];
+        const step =
+          currentCharacter === "\n"
+            ? 3
+            : /[.!?]/.test(currentCharacter)
+              ? 4
+              : nextIndex < 180
+                ? 5
+                : 8;
+        const delay =
+          currentCharacter === "\n"
+            ? 12
+            : /[,:;]/.test(currentCharacter)
+              ? 14
+              : /[.!?]/.test(currentCharacter)
+                ? 18
+                : 9;
+
+        nextIndex = Math.min(nextIndex + step, text.length);
         const partial = text.slice(0, nextIndex);
         streamingMessageRef.current = partial;
         setStreamingMessage(partial);
-        typingTimeoutRef.current = window.setTimeout(writeChunk, 18);
+        typingTimeoutRef.current = window.setTimeout(writeChunk, delay);
       };
 
-      typingTimeoutRef.current = window.setTimeout(writeChunk, 200);
+      typingTimeoutRef.current = window.setTimeout(writeChunk, 70);
     },
     [appendAssistantMessage, clearTypingTimeout]
   );

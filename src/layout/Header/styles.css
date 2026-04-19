@@ -6,12 +6,8 @@
   align-items: center;
   justify-content: flex-start;
   padding: 20px 28px 14px;
-  background: linear-gradient(
-    180deg,
-    var(--background-canvas) 68%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  backdrop-filter: blur(16px);
+  background: var(--background-canvas);
+  overflow: visible;
 }
 
 .app-header__left {

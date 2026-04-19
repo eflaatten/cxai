@@ -126,6 +126,7 @@ function App() {
           isPreparingResponse={isPreparingResponse}
           isTypingResponse={isTypingResponse}
           messages={messages}
+          modelOptions={modelOptions}
           onDraftChange={setDraft}
           onRetryPrompt={(prompt) => sendPrompt(prompt)}
           onRetryWithOtherModel={async (prompt) => {
@@ -148,6 +149,8 @@ function App() {
           onSend={sendMessage}
           onStop={stopResponse}
           onSuggestionSelect={setDraft}
+          provider={provider}
+          setProvider={setProvider}
           streamingMessage={streamingMessage}
         />
       </AppLayout>

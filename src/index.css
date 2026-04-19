@@ -66,12 +66,23 @@ body,
 body {
   margin: 0;
   background:
+    radial-gradient(
+      circle at top center,
+      rgba(59, 131, 246, 0.34) 0%,
+      rgba(59, 131, 246, 0.14) 16%,
+      rgba(59, 131, 246, 0.04) 30%,
+      transparent 52%
+    ),
     var(--gradient-hero),
     var(--background-canvas);
   color: var(--text-primary);
   font-family: var(--typography-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body.cxai-empty-state {
+  background: var(--background-canvas);
 }
 
 button,

@@ -25,6 +25,45 @@ const formatMath = (text) =>
     .replace(/\\\[/g, "$$")
     .replace(/\\\]/g, "$$");
 
+const normalizeSyntaxTheme = (theme) =>
+  Object.fromEntries(
+    Object.entries(theme).map(([key, value]) => {
+      if (!value || typeof value !== "object") {
+        return [key, value];
+      }
+
+      if (key === 'pre[class*="language-"]') {
+        return [
+          key,
+          {
+            ...value,
+            background: "var(--chat-code-background)",
+            backgroundColor: "var(--chat-code-background)",
+            textShadow: "none",
+          },
+        ];
+      }
+
+      if (key === 'code[class*="language-"]') {
+        return [
+          key,
+          {
+            ...value,
+            background: "transparent",
+            backgroundColor: "transparent",
+            textShadow: "none",
+          },
+        ];
+      }
+
+      const sanitizedValue = { ...value, textShadow: "none" };
+      delete sanitizedValue.background;
+      delete sanitizedValue.backgroundColor;
+
+      return [key, sanitizedValue];
+    })
+  );
+
 function ChatMessage({
   actionsDisabled = false,
   alternateModelLabel,
@@ -38,20 +77,8 @@ function ChatMessage({
   const [copiedCode, setCopiedCode] = useState("");
 
   const syntaxTheme = isDark
-    ? {
-        ...oneDark,
-        'pre[class*="language-"]': {
-          ...oneDark['pre[class*="language-"]'],
-          background: "var(--chat-code-background)",
-        },
-      }
-    : {
-        ...oneLight,
-        'pre[class*="language-"]': {
-          ...oneLight['pre[class*="language-"]'],
-          background: "var(--chat-code-background)",
-        },
-      };
+    ? normalizeSyntaxTheme(oneDark)
+    : normalizeSyntaxTheme(oneLight);
 
   const copyText = async (value, scope = "message") => {
     await navigator.clipboard.writeText(value);

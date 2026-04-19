@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
 import ChatComposer from "../ChatComposer";
 import ChatMessage from "../ChatMessage";
@@ -17,20 +17,51 @@ function ChatView({
   isPreparingResponse,
   isTypingResponse,
   messages,
+  modelOptions,
   onDraftChange,
   onRetryPrompt,
   onRetryWithOtherModel,
   onSend,
   onStop,
   onSuggestionSelect,
+  provider,
+  setProvider,
   streamingMessage,
 }) {
   const endRef = useRef(null);
   const hasMessages = messages.length > 0;
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [isPreparingResponse, messages, streamingMessage]);
+    if (typeof document === "undefined") {
+      return undefined;
+    }
+
+    document.body.classList.toggle("cxai-empty-state", !hasMessages);
+
+    return () => {
+      document.body.classList.remove("cxai-empty-state");
+    };
+  }, [hasMessages]);
+
+  useLayoutEffect(() => {
+    const node = endRef.current;
+
+    if (!node) {
+      return;
+    }
+
+    const behavior =
+      isTypingResponse || streamingMessage ? "auto" : "smooth";
+
+    window.requestAnimationFrame(() => {
+      node.scrollIntoView({ behavior, block: "end" });
+    });
+  }, [
+    isPreparingResponse,
+    isTypingResponse,
+    messages,
+    streamingMessage,
+  ]);
 
   const getRetryPrompt = (index) => {
     for (let cursor = index; cursor >= 0; cursor -= 1) {
@@ -51,7 +82,8 @@ function ChatView({
           <section className="chat-view__hero">
             <div className="chat-view__hero-copy">
               <span className="chat-view__eyebrow">CXAI Workspace</span>
-              <h1>Ask anything with a cleaner, calmer chat flow.</h1>
+              <h1>Ask anything...</h1>
+              <p>Choose a quick prompt to get started</p>
             </div>
 
             <div className="chat-view__prompt-grid">
@@ -116,10 +148,13 @@ function ChatView({
           isBusy={isBusy}
           isPreparingResponse={isPreparingResponse}
           isTypingResponse={isTypingResponse}
+          modelOptions={modelOptions}
           onChange={onDraftChange}
           onSend={onSend}
           onStop={onStop}
           placeholder={hasMessages ? "Message CXAI..." : "Ask anything..."}
+          provider={provider}
+          setProvider={setProvider}
           value={draft}
           variant={hasMessages ? "thread" : "hero"}
         />

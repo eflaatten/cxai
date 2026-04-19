@@ -345,4 +345,8 @@
   .sidebar-profile-menu {
     width: min(224px, calc(100vw - 32px)) !important;
   }
+
+  .sidebar__profile-button {
+    border-radius: var(--radius-pill);
+  }
 }

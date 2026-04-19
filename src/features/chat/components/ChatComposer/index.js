@@ -1,12 +1,16 @@
 import { useEffect, useRef } from "react";
 import { StopIcon, UpArrowIcon } from "../../../../assets/icons";
+import ModelSwitcher from "../../../../shared/components/ModelSwitcher";
 
 function ChatComposer({
   isBusy,
+  modelOptions,
   onChange,
   onSend,
   onStop,
   placeholder,
+  provider,
+  setProvider,
   value,
   variant = "thread",
 }) {
@@ -52,7 +56,19 @@ function ChatComposer({
           rows={1}
         />
 
-        <div className="chat-composer__controls">
+        <div className="chat-composer__footer">
+          <div className="chat-composer__actions">
+            <ModelSwitcher
+              className="chat-composer__model-switcher"
+              direction="up"
+              modelOptions={modelOptions}
+              provider={provider}
+              setProvider={setProvider}
+              triggerClassName="chat-composer__model-trigger"
+            />
+          </div>
+
+          <div className="chat-composer__controls">
           <button
             type="button"
             className="chat-composer__button"
@@ -66,6 +82,7 @@ function ChatComposer({
               <UpArrowIcon color="var(--text-button)" width="18" height="18" />
             )}
           </button>
+          </div>
         </div>
       </div>
     </div>

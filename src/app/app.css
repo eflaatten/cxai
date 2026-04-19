@@ -2,9 +2,7 @@
   display: grid;
   grid-template-columns: 88px minmax(0, 1fr);
   min-height: 100vh;
-  background:
-    var(--gradient-hero),
-    var(--background-canvas);
+  background: var(--background-canvas);
   transition: grid-template-columns 180ms ease;
 }
 

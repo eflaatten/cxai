@@ -6,7 +6,10 @@ import {
   CloseIcon,
   EditIcon,
   LogoutIcon,
+  MoonIcon,
+  NightIcon,
   SettingsIcon,
+  SunIcon,
 } from "../../assets/icons";
 import cxfCircle from "../../assets/logos/cxfab_circle.png";
 import cxfLogo from "../../assets/logos/cxf_logo.png";
@@ -49,6 +52,22 @@ function Sidebar({
         .reverse()
         .slice(0, 8),
     [historyItems]
+  );
+  const themedOptions = useMemo(
+    () =>
+      themeOptions.map((option) => {
+        const icons = {
+          light: <SunIcon width="18px" height="18px" />,
+          dark: <MoonIcon width="18px" height="18px" />,
+          system: <NightIcon width="18px" height="18px" />,
+        };
+
+        return {
+          ...option,
+          icon: icons[option.value],
+        };
+      }),
+    [themeOptions]
   );
 
   const syncProfileMenuPosition = useCallback(() => {
@@ -183,13 +202,13 @@ function Sidebar({
           <span className="sidebar-dialog__label">Theme</span>
           <Dropdown
             ariaLabel="Select theme"
-            options={themeOptions}
+            options={themedOptions}
             value={selectedTheme}
             onSelect={(option) => setTheme(option.value)}
           />
         </div>
 
-        <div className="sidebar-dialog__row sidebar-dialog__row--stacked">
+        <div className="sidebar-dialog__row">
           <span className="sidebar-dialog__label">Model</span>
           <ModelSwitcher
             modelOptions={modelOptions}

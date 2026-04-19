@@ -17,7 +17,14 @@ const modelIcons = {
   ),
 };
 
-function ModelSwitcher({ modelOptions, provider, setProvider }) {
+function ModelSwitcher({
+  className,
+  direction,
+  modelOptions,
+  provider,
+  setProvider,
+  triggerClassName,
+}) {
   const options = modelOptions.map((option) => ({
     ...option,
     icon: modelIcons[option.value],
@@ -26,7 +33,10 @@ function ModelSwitcher({ modelOptions, provider, setProvider }) {
   return (
     <Dropdown
       ariaLabel="Select model"
+      className={className}
+      direction={direction}
       options={options}
+      triggerClassName={triggerClassName}
       value={provider}
       onSelect={(option) => {
         setProvider(option.value);
