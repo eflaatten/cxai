@@ -1,0 +1,114 @@
+.dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.dropdown__trigger,
+.dropdown__option {
+  font: inherit;
+}
+
+.dropdown__trigger {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: var(--background-elevated);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  box-shadow: var(--shadow-panel);
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.dropdown__trigger:hover {
+  background: var(--background-surface);
+  border-color: var(--border-strong);
+}
+
+.dropdown__trigger-main,
+.dropdown__option-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.dropdown__trigger-label,
+.dropdown__option-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown__trigger-icon,
+.dropdown__option-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+}
+
+.dropdown__menu {
+  position: absolute;
+  z-index: 20;
+  min-width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 18px;
+  background: var(--background-surface);
+  box-shadow: var(--shadow-floating);
+}
+
+.dropdown--left .dropdown__menu {
+  left: 0;
+}
+
+.dropdown--right .dropdown__menu {
+  right: 0;
+}
+
+.dropdown--down .dropdown__menu {
+  top: calc(100% + 10px);
+}
+
+.dropdown--up .dropdown__menu {
+  bottom: calc(100% + 10px);
+}
+
+.dropdown__option {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.dropdown__option:hover,
+.dropdown__option--selected {
+  background: var(--interactive-hover);
+}
+
+.dropdown__option--selected {
+  color: var(--accent-strong);
+}
+
+@media (max-width: 720px) {
+  .dropdown__trigger {
+    max-width: 100%;
+  }
+}

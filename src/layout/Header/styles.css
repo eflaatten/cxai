@@ -1,0 +1,58 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 28px 14px;
+  background: linear-gradient(
+    180deg,
+    var(--background-canvas) 68%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  backdrop-filter: blur(16px);
+}
+
+.app-header__left {
+  display: flex;
+  align-items: center;
+}
+
+.app-header__menu-button {
+  border: 1px solid var(--border-subtle);
+  background: var(--background-elevated);
+  color: var(--text-primary);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-panel);
+}
+
+.app-header__menu-button {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.app-header__menu-button:hover {
+  background: var(--interactive-hover);
+}
+
+.app-header__menu-button:active {
+  transform: translateY(1px);
+}
+
+.app-header__menu-button svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+@media (max-width: 720px) {
+  .app-header {
+    padding: 16px;
+  }
+}
