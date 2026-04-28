@@ -13,10 +13,10 @@ function App() {
   const { isDark } = useTheme();
   const [provider, setProvider] = useState(() => {
     if (typeof window === "undefined") {
-      return "gpt-4.1";
+      return "gpt-4o";
     }
 
-    return window.localStorage.getItem("cxai-provider") || "gpt-4.1";
+    return window.localStorage.getItem("cxai-provider") || "gpt-4o";
   });
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     if (typeof window === "undefined") {
@@ -40,7 +40,8 @@ function App() {
   } = useChatSession(provider);
 
   const modelOptions = [
-    { label: "OpenAI", value: "gpt-4.1" },
+    { label: "Gemma", value: "gemma4:e4b-it-q4_K_M" },
+    { label: "OpenAI", value: "gpt-4o" },
     { label: "CXFabric AI", value: "llama3.2:1b" },
   ];
   const alternateModel =

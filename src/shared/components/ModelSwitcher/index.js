@@ -1,13 +1,15 @@
 import { toast } from "react-toastify";
 import {
   OpenAIIcon,
+  GemmaIcon,
 } from "../../../assets/icons";
 import cxfCircle from "../../../assets/logos/cxfab_circle1.png";
 import Dropdown from "../Dropdown";
 import "./styles.css";
 
 const modelIcons = {
-  "gpt-4.1": <OpenAIIcon color="currentColor" />,
+  "gemma4:e4b-it-q4_K_M": <GemmaIcon color="currentColor" />,
+  "gpt-4o": <OpenAIIcon color="currentColor" />,
   "llama3.2:1b": (
     <img
       src={cxfCircle}

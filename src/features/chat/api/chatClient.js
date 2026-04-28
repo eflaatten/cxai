@@ -1,109 +1,131 @@
 import axios from "axios";
 
-/*
-const getFlowEndpoint = () =>
-  `https://cxf-executor-dev.cxfabric.io/restendpoint` +
-  `?tenant_id=${process.env.REACT_APP_TENANT_ID}` +
-  `&flow_id=${process.env.REACT_APP_FLOW_ID}`;
+//const CXFABRIC_EXECUTOR_ENDPOINT = `https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=${process.env.REACT_APP_TENANT_ID}&flow_id=${process.env.REACT_APP_FLOW_ID}&draft=true&targetUserId=${process.env.REACT_APP_USER_ID}&displayExecutionLogs=true`;
+const CXFABRIC_EXECUTOR_ENDPOINT = `https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=3cdf6db1-d2c3-4408-889d-a542c78ab2c9&draft=true&targetUserId=auth0|67bdf583d7397dc4f217a8e0&displayExecutionLogs=true`; // replace with extended rest trigger endpoint
+// const UBUNTU_SERVER_ENDPOINT = `${process.env.REACT_APP_UBUNTU_SERVER_URL}/api/rag`;
 
-const buildFlowHeaders = () => ({
-  "Content-Type": "application/json",
-  Authorization: `Bearer ${process.env.REACT_APP_BEARER_TOKEN}`,
-});
-*/
-
-const OPENAI_ENDPOINT = "https://api.openai.com/v1/chat/completions";
-const CXFABRIC_OLLAMA_ENDPOINT =
-  "https://cxf-ollama-dev.cxfabric.io/v1/chat/completions";
-const DEFAULT_OPENAI_MODEL = process.env.REACT_APP_OPENAI_MODEL || "gpt-4.1";
-
-const buildOpenAIHeaders = () => ({
+const buildExecutorHeaders = () => ({
   "Content-Type": "application/json",
   Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
 });
 
-const buildOllamaHeaders = () => ({
-  "Content-Type": "application/json",
-});
+const FALLBACK_MESSAGE = "I am unable to process your request right now.";
 
-export async function sendChatMessage({ message, provider, signal }) {
-  if (provider === "llama3.2:1b") {
-    const response = await axios.post(
-      CXFABRIC_OLLAMA_ENDPOINT,
-      {
-        model: provider,
-        messages: [{ role: "user", content: message }],
-      },
-      {
-        headers: buildOllamaHeaders(),
-        signal,
+const getTextFromContent = (content) => {
+  if (typeof content === "string") {
+    return content;
+  }
+
+  if (Array.isArray(content)) {
+    return content
+      .map((item) => {
+        if (typeof item === "string") {
+          return item;
+        }
+
+        return item?.text || item?.content || "";
+      })
+      .filter(Boolean)
+      .join("");
+  }
+
+  return "";
+};
+
+const extractAssistantMessage = (payload, depth = 0) => {
+  if (!payload || depth > 4) {
+    return "";
+  }
+
+  if (typeof payload === "string") {
+    return payload;
+  }
+
+  if (Array.isArray(payload)) {
+    for (const item of payload) {
+      const text = extractAssistantMessage(item, depth + 1);
+
+      if (text) {
+        return text;
       }
-    );
-
-    return (
-      response.data?.choices?.[0]?.message?.content ||
-      response.data?.message?.content ||
-      response.data?.message ||
-      response.data?.error?.message ||
-      "I am unable to process your request right now."
-    );
-  }
-
-  if (!process.env.REACT_APP_OPENAI_API_KEY) {
-    throw new Error("Missing REACT_APP_OPENAI_API_KEY for direct OpenAI calls.");
-  }
-
-  /*
-  const headers = buildFlowHeaders();
-
-  if (provider === "llama3.2:1b") {
-    const response = await axios.post(
-      getFlowEndpoint(),
-      { model: provider, question: message },
-      {
-        headers,
-        signal,
-      }
-    );
-
-    return (
-      response.data?.choices?.[0]?.message?.content ||
-      response.data?.message ||
-      "I am unable to process your request right now."
-    );
-  }
-
-  const response = await axios.post(
-    getFlowEndpoint(),
-    {
-      type: "chat",
-      model: provider,
-      messages: [{ role: "user", content: message }],
-      stream: true,
-    },
-    {
-      headers,
-      signal,
     }
-  );
-  */
 
-  const response = await axios.post(
-    OPENAI_ENDPOINT,
-    {
-      model: provider || DEFAULT_OPENAI_MODEL,
-      messages: [{ role: "user", content: message }],
-    },
-    {
-      headers: buildOpenAIHeaders(),
-      signal,
-    }
-  );
+    return "";
+  }
+
+  const choice = payload.choices?.[0];
+  const choiceText =
+    getTextFromContent(choice?.message?.content) ||
+    getTextFromContent(choice?.delta?.content) ||
+    getTextFromContent(choice?.text);
+
+  if (choiceText) {
+    return choiceText;
+  }
+
+  const directText =
+    getTextFromContent(payload.message?.content) ||
+    getTextFromContent(payload.message) ||
+    getTextFromContent(payload.content) ||
+    getTextFromContent(payload.answer) ||
+    getTextFromContent(payload.output_text) ||
+    getTextFromContent(payload.response) ||
+    getTextFromContent(payload.error?.message);
+
+  if (directText) {
+    return directText;
+  }
 
   return (
-    response.data?.choices?.[0]?.message?.content ||
-    response.data?.message?.content ||
-    response.data?.error?.message ||
-    "I am unable to process your request right now."
+    extractAssistantMessage(payload.data, depth + 1) ||
+    extractAssistantMessage(payload.result, depth + 1) ||
+    extractAssistantMessage(payload.response, depth + 1) ||
+    extractAssistantMessage(payload.output, depth + 1)
   );
+};
+
+export async function sendChatMessage({ message, provider, signal }) {
+  let assistantMessage = "";
+  try {
+    let response;
+    if (provider === "llama3.2:1b" || provider === "gemma4:e4b-it-q4_K_M") {
+      response = await axios.post(
+        CXFABRIC_EXECUTOR_ENDPOINT,
+        { model: provider, question: message },
+        { signal }
+      );
+    } else {
+      response = await axios.post(
+        CXFABRIC_EXECUTOR_ENDPOINT,
+        {
+          model: provider,
+          messages: [{ role: "user", content: message }],
+        },
+        {
+          headers: buildExecutorHeaders(),
+          signal,
+        }
+      );
+    }
+    assistantMessage =
+      extractAssistantMessage(response?.data) || FALLBACK_MESSAGE;
+    return assistantMessage;
+  } catch (err) {
+    return FALLBACK_MESSAGE;
+  }
 }
+
+// export async function sendChatMessage({ message, provider, signal }) {
+//   try {
+//     const response = await axios.post(
+//       UBUNTU_SERVER_ENDPOINT,
+//       { question: message },
+//       { signal }
+//     );
+//     const assistantMessage =
+//       response.data?.answer || "I am unable to process your request right now.";
+//     return assistantMessage;
+//   } catch (err) {
+//     return "I am unable to process your request right now.";
+//   }
+// }

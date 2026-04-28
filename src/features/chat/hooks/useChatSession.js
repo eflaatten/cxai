@@ -12,9 +12,7 @@ export function useChatSession(provider) {
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState([]);
   const [streamingMessage, setStreamingMessage] = useState("");
-  const [isPreparingResponse, setIsPreparingResponse] = useState(false);
-  const [isRequestInFlight, setIsRequestInFlight] = useState(false);
-  const [isTypingResponse, setIsTypingResponse] = useState(false);
+  const [phase, setPhase] = useState("idle");
   const abortControllerRef = useRef(null);
   const streamingMessageRef = useRef("");
   const typingTimeoutRef = useRef(null);
@@ -49,9 +47,7 @@ export function useChatSession(provider) {
 
       streamingMessageRef.current = "";
       setStreamingMessage("");
-      setIsTypingResponse(false);
-      setIsPreparingResponse(false);
-      setIsRequestInFlight(false);
+      setPhase("idle");
     },
     [appendAssistantMessage, clearTypingTimeout]
   );
@@ -59,13 +55,13 @@ export function useChatSession(provider) {
   const startTypewriter = useCallback(
     (text) => {
       if (!text?.trim()) {
-        setIsTypingResponse(false);
+        setPhase("idle");
         setStreamingMessage("");
         return;
       }
 
       clearTypingTimeout();
-      setIsTypingResponse(true);
+      setPhase("typing");
       setStreamingMessage("");
       streamingMessageRef.current = "";
 
@@ -76,7 +72,7 @@ export function useChatSession(provider) {
           appendAssistantMessage(text);
           streamingMessageRef.current = "";
           setStreamingMessage("");
-          setIsTypingResponse(false);
+          setPhase("idle");
           return;
         }
 
@@ -114,12 +110,7 @@ export function useChatSession(provider) {
     async (prompt, providerOverride = provider) => {
       const trimmedPrompt = prompt.trim();
 
-      if (
-        !trimmedPrompt ||
-        isPreparingResponse ||
-        isRequestInFlight ||
-        isTypingResponse
-      ) {
+      if (!trimmedPrompt || phase !== "idle") {
         return false;
       }
 
@@ -127,9 +118,7 @@ export function useChatSession(provider) {
       clearTypingTimeout();
       setStreamingMessage("");
       streamingMessageRef.current = "";
-      setIsTypingResponse(false);
-      setIsPreparingResponse(true);
-      setIsRequestInFlight(true);
+      setPhase("thinking");
 
       const controller = new AbortController();
       abortControllerRef.current = controller;
@@ -145,8 +134,11 @@ export function useChatSession(provider) {
           return false;
         }
 
-        setIsPreparingResponse(false);
-        startTypewriter(response);
+        const assistantText = response?.trim()
+          ? response
+          : "I am unable to process your request right now.";
+
+        startTypewriter(assistantText);
         return true;
       } catch (error) {
         if (axios.isCancel(error) || error?.name === "CanceledError") {
@@ -154,25 +146,16 @@ export function useChatSession(provider) {
         }
 
         console.error("Failed to send chat message", error);
-        setIsPreparingResponse(false);
+        setPhase("idle");
         startTypewriter("Something went wrong while processing your message.");
         return false;
       } finally {
         if (abortControllerRef.current === controller) {
           abortControllerRef.current = null;
         }
-
-        setIsRequestInFlight(false);
       }
     },
-    [
-      clearTypingTimeout,
-      isPreparingResponse,
-      isRequestInFlight,
-      isTypingResponse,
-      provider,
-      startTypewriter,
-    ]
+    [clearTypingTimeout, phase, provider, startTypewriter]
   );
 
   const sendMessage = useCallback(async () => {
@@ -194,9 +177,9 @@ export function useChatSession(provider) {
 
   return {
     draft,
-    isBusy: isPreparingResponse || isRequestInFlight || isTypingResponse,
-    isPreparingResponse,
-    isTypingResponse,
+    isBusy: phase !== "idle",
+    isPreparingResponse: phase === "thinking",
+    isTypingResponse: phase === "typing",
     messages,
     resetChat: () => {
       cancelActiveResponse(false);

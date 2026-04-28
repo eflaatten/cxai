@@ -295,6 +295,57 @@ const OpenAIIconBase = ({ fillColor, height, width, ...props }) => {
 }
 export const OpenAIIcon = iconThemeColor(OpenAIIconBase);
 
+const GemmaIconBase = ({ fillColor, height, width, ...props }) => {
+  return (
+    <svg
+      width={width}
+      height={height}
+      viewBox="0 0 24 24"
+      role="img"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      {...props}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="
+          M12 2
+          C12.9 5.1 14.9 7.1 18 8
+          C14.9 8.9 12.9 10.9 12 14
+          C11.1 10.9 9.1 8.9 6 8
+          C9.1 7.1 11.1 5.1 12 2
+          Z
+
+          M22 12
+          C18.9 12.9 16.9 14.9 16 18
+          C15.1 14.9 13.1 12.9 10 12
+          C13.1 11.1 15.1 9.1 16 6
+          C16.9 9.1 18.9 11.1 22 12
+          Z
+
+          M12 22
+          C11.1 18.9 9.1 16.9 6 16
+          C9.1 15.1 11.1 13.1 12 10
+          C12.9 13.1 14.9 15.1 18 16
+          C14.9 16.9 12.9 18.9 12 22
+          Z
+
+          M2 12
+          C5.1 11.1 7.1 9.1 8 6
+          C8.9 9.1 10.9 11.1 14 12
+          C10.9 12.9 8.9 14.9 8 18
+          C7.1 14.9 5.1 12.9 2 12
+          Z
+        "
+        fill={fillColor}
+      />
+    </svg>
+  );
+};
+
+export const GemmaIcon = iconThemeColor(GemmaIconBase);
+
 export const QwenIcon = (props) => (
   <svg
     width="24"
