@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AppLayout from "./app/AppLayout";
 import ChatView from "./features/chat/components/ChatView";
@@ -11,13 +10,6 @@ import { useTheme } from "./theme";
 
 function App() {
   const { isDark } = useTheme();
-  const [provider, setProvider] = useState(() => {
-    if (typeof window === "undefined") {
-      return "gpt-4o";
-    }
-
-    return window.localStorage.getItem("cxai-provider") || "gpt-4o";
-  });
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     if (typeof window === "undefined") {
       return true;
@@ -31,27 +23,14 @@ function App() {
     isPreparingResponse,
     isTypingResponse,
     messages,
+    reasoningMessage,
     resetChat,
     sendPrompt,
     sendMessage,
     setDraft,
     stopResponse,
     streamingMessage,
-  } = useChatSession(provider);
-
-  const modelOptions = [
-    { label: "Gemma", value: "gemma4:e4b-it-q4_K_M" },
-    { label: "OpenAI", value: "gpt-4o" },
-    { label: "CXFabric AI", value: "llama3.2:1b" },
-  ];
-  const alternateModel =
-    modelOptions.find((option) => option.value !== provider) ?? null;
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem("cxai-provider", provider);
-    }
-  }, [provider]);
+  } = useChatSession();
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) {
@@ -106,7 +85,7 @@ function App() {
           <Sidebar
             historyItems={messages}
             isOpen={isSidebarOpen}
-            modelOptions={modelOptions}
+            onCloseSidebar={() => setIsSidebarOpen(false)}
             onNewChat={() => {
               resetChat();
 
@@ -114,44 +93,22 @@ function App() {
                 setIsSidebarOpen(false);
               }
             }}
-            provider={provider}
-            setProvider={setProvider}
+            onOpenSidebar={() => setIsSidebarOpen(true)}
             userEmail="user@email.com"
           />
         }
       >
         <ChatView
-          alternateModelLabel={alternateModel?.label ?? ""}
           draft={draft}
           isBusy={isBusy}
           isPreparingResponse={isPreparingResponse}
           isTypingResponse={isTypingResponse}
           messages={messages}
-          modelOptions={modelOptions}
+          reasoningMessage={reasoningMessage}
           onDraftChange={setDraft}
           onRetryPrompt={(prompt) => sendPrompt(prompt)}
-          onRetryWithOtherModel={async (prompt) => {
-            if (!alternateModel) {
-              return;
-            }
-
-            const wasSent = await sendPrompt(prompt, alternateModel.value);
-
-            if (wasSent) {
-              setProvider(alternateModel.value);
-              toast.success(`Switched to ${alternateModel.label}`, {
-                autoClose: 1800,
-                closeOnClick: true,
-                draggable: false,
-                pauseOnHover: false,
-              });
-            }
-          }}
           onSend={sendMessage}
           onStop={stopResponse}
-          onSuggestionSelect={setDraft}
-          provider={provider}
-          setProvider={setProvider}
           streamingMessage={streamingMessage}
         />
       </AppLayout>

@@ -2,7 +2,7 @@ import { createThemeTokens } from "../tokens";
 
 const darkTheme = createThemeTokens("dark", {
   background: {
-    canvas: "#090a0d",
+    canvas: "#000000",
     surface: "#111317",
     muted: "#171a1f",
     elevated: "rgba(12, 14, 18, 0.9)",
@@ -41,7 +41,7 @@ const darkTheme = createThemeTokens("dark", {
     composer: "rgba(17, 19, 23, 0.96)",
     composerBorder: "rgba(123, 147, 179, 0.16)",
     composerRing: "rgba(123, 147, 179, 0.12)",
-    codeBackground: "#0d0f13",
+    codeBackground: "#000000",
     codeHeader: "#181c22",
   },
   tooltip: {

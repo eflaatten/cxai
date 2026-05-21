@@ -4,32 +4,24 @@ import ChatComposer from "../ChatComposer";
 import ChatMessage from "../ChatMessage";
 import "../../styles.css";
 
-const quickPrompts = [
-  "Summarize this idea into a clear project brief.",
-  "Help me draft a concise professional reply.",
-  "Turn these notes into a plan with next steps.",
-];
-
 function ChatView({
-  alternateModelLabel,
   draft,
   isBusy,
   isPreparingResponse,
   isTypingResponse,
   messages,
-  modelOptions,
   onDraftChange,
   onRetryPrompt,
-  onRetryWithOtherModel,
   onSend,
   onStop,
-  onSuggestionSelect,
-  provider,
-  setProvider,
+  reasoningMessage,
   streamingMessage,
 }) {
   const endRef = useRef(null);
   const hasMessages = messages.length > 0;
+  const thinkingText = reasoningMessage || "Thinking…";
+  const shouldShowThinking =
+    isPreparingResponse || (isTypingResponse && Boolean(reasoningMessage));
 
   useEffect(() => {
     if (typeof document === "undefined") {
@@ -81,22 +73,7 @@ function ChatView({
         {!hasMessages && (
           <section className="chat-view__hero">
             <div className="chat-view__hero-copy">
-              <span className="chat-view__eyebrow">CXAI Workspace</span>
-              <h1>Ask anything...</h1>
-              <p>Choose a quick prompt to get started</p>
-            </div>
-
-            <div className="chat-view__prompt-grid">
-              {quickPrompts.map((prompt) => (
-                <button
-                  key={prompt}
-                  type="button"
-                  className="chat-view__prompt"
-                  onClick={() => onSuggestionSelect(prompt)}
-                >
-                  {prompt}
-                </button>
-              ))}
+              <h1>Ask anything</h1>
             </div>
           </section>
         )}
@@ -110,24 +87,22 @@ function ChatView({
                 <ChatMessage
                   key={message.id}
                   actionsDisabled={isBusy}
-                  alternateModelLabel={alternateModelLabel}
                   message={message}
                   onRetry={
                     retryPrompt ? () => onRetryPrompt(retryPrompt) : undefined
-                  }
-                  onRetryWithOtherModel={
-                    retryPrompt && alternateModelLabel
-                      ? () => onRetryWithOtherModel(retryPrompt)
-                      : undefined
                   }
                 />
               );
             })}
 
-            {isPreparingResponse && (
-              <div className="chat-view__thinking">
+            {shouldShowThinking && (
+              <div
+                className={`chat-view__thinking${
+                  reasoningMessage ? " chat-view__thinking--reasoning" : ""
+                }`}
+              >
                 <Loader2 className="chat-view__thinking-icon" />
-                <span>Thinking…</span>
+                <span className="chat-view__thinking-text">{thinkingText}</span>
               </div>
             )}
 
@@ -148,13 +123,10 @@ function ChatView({
           isBusy={isBusy}
           isPreparingResponse={isPreparingResponse}
           isTypingResponse={isTypingResponse}
-          modelOptions={modelOptions}
           onChange={onDraftChange}
           onSend={onSend}
           onStop={onStop}
-          placeholder={hasMessages ? "Message CXAI..." : "Ask anything..."}
-          provider={provider}
-          setProvider={setProvider}
+          placeholder={"Ask anything..."}
           value={draft}
           variant={hasMessages ? "thread" : "hero"}
         />

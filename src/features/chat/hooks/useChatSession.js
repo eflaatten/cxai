@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { sendChatMessage } from "../api/chatClient";
 
 const createMessage = (role, text) => ({
@@ -8,9 +7,10 @@ const createMessage = (role, text) => ({
   text,
 });
 
-export function useChatSession(provider) {
+export function useChatSession() {
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState([]);
+  const [reasoningMessage, setReasoningMessage] = useState("");
   const [streamingMessage, setStreamingMessage] = useState("");
   const [phase, setPhase] = useState("idle");
   const abortControllerRef = useRef(null);
@@ -46,6 +46,7 @@ export function useChatSession(provider) {
       }
 
       streamingMessageRef.current = "";
+      setReasoningMessage("");
       setStreamingMessage("");
       setPhase("idle");
     },
@@ -57,6 +58,7 @@ export function useChatSession(provider) {
       if (!text?.trim()) {
         setPhase("idle");
         setStreamingMessage("");
+        setReasoningMessage("");
         return;
       }
 
@@ -72,6 +74,7 @@ export function useChatSession(provider) {
           appendAssistantMessage(text);
           streamingMessageRef.current = "";
           setStreamingMessage("");
+          setReasoningMessage("");
           setPhase("idle");
           return;
         }
@@ -107,7 +110,7 @@ export function useChatSession(provider) {
   );
 
   const sendPrompt = useCallback(
-    async (prompt, providerOverride = provider) => {
+    async (prompt) => {
       const trimmedPrompt = prompt.trim();
 
       if (!trimmedPrompt || phase !== "idle") {
@@ -117,6 +120,7 @@ export function useChatSession(provider) {
       setMessages((current) => [...current, createMessage("user", trimmedPrompt)]);
       clearTypingTimeout();
       setStreamingMessage("");
+      setReasoningMessage("");
       streamingMessageRef.current = "";
       setPhase("thinking");
 
@@ -126,7 +130,7 @@ export function useChatSession(provider) {
       try {
         const response = await sendChatMessage({
           message: trimmedPrompt,
-          provider: providerOverride,
+          onReasoning: (reasoning) => setReasoningMessage(reasoning),
           signal: controller.signal,
         });
 
@@ -134,19 +138,24 @@ export function useChatSession(provider) {
           return false;
         }
 
-        const assistantText = response?.trim()
-          ? response
+        if (response?.reasoning?.trim()) {
+          setReasoningMessage(response.reasoning);
+        }
+
+        const assistantText = response?.text?.trim()
+          ? response.text
           : "I am unable to process your request right now.";
 
         startTypewriter(assistantText);
         return true;
       } catch (error) {
-        if (axios.isCancel(error) || error?.name === "CanceledError") {
+        if (error?.name === "AbortError" || error?.name === "CanceledError") {
           return false;
         }
 
         console.error("Failed to send chat message", error);
         setPhase("idle");
+        setReasoningMessage("");
         startTypewriter("Something went wrong while processing your message.");
         return false;
       } finally {
@@ -155,7 +164,7 @@ export function useChatSession(provider) {
         }
       }
     },
-    [clearTypingTimeout, phase, provider, startTypewriter]
+    [clearTypingTimeout, phase, startTypewriter]
   );
 
   const sendMessage = useCallback(async () => {
@@ -166,8 +175,8 @@ export function useChatSession(provider) {
     }
 
     setDraft("");
-    await sendPrompt(trimmedDraft, provider);
-  }, [draft, provider, sendPrompt]);
+    await sendPrompt(trimmedDraft);
+  }, [draft, sendPrompt]);
 
   useEffect(() => {
     streamingMessageRef.current = streamingMessage;
@@ -181,6 +190,7 @@ export function useChatSession(provider) {
     isPreparingResponse: phase === "thinking",
     isTypingResponse: phase === "typing",
     messages,
+    reasoningMessage,
     resetChat: () => {
       cancelActiveResponse(false);
       setDraft("");

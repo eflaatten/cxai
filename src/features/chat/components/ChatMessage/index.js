@@ -66,11 +66,9 @@ const normalizeSyntaxTheme = (theme) =>
 
 function ChatMessage({
   actionsDisabled = false,
-  alternateModelLabel,
   isStreaming = false,
   message,
   onRetry,
-  onRetryWithOtherModel,
 }) {
   const { isDark } = useTheme();
   const [copied, setCopied] = useState(false);
@@ -187,19 +185,6 @@ function ChatMessage({
             </button>
           ) : null}
 
-          {onRetryWithOtherModel ? (
-            <button
-              type="button"
-              className="chat-message__action-button"
-              onClick={onRetryWithOtherModel}
-              disabled={actionsDisabled}
-            >
-              <RefreshIcon width="18" height="18" />
-              <span>
-                {alternateModelLabel ? `Try ${alternateModelLabel}` : "Other model"}
-              </span>
-            </button>
-          ) : null}
         </div>
       )}
     </article>

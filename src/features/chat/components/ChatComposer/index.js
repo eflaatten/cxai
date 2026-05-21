@@ -1,20 +1,17 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StopIcon, UpArrowIcon } from "../../../../assets/icons";
-import ModelSwitcher from "../../../../shared/components/ModelSwitcher";
 
 function ChatComposer({
   isBusy,
-  modelOptions,
   onChange,
   onSend,
   onStop,
   placeholder,
-  provider,
-  setProvider,
   value,
   variant = "thread",
 }) {
   const textareaRef = useRef(null);
+  const [isMultiline, setIsMultiline] = useState(false);
 
   useEffect(() => {
     if (!textareaRef.current) {
@@ -22,7 +19,9 @@ function ChatComposer({
     }
 
     textareaRef.current.style.height = "0px";
-    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    const nextHeight = textareaRef.current.scrollHeight;
+    textareaRef.current.style.height = `${nextHeight}px`;
+    setIsMultiline(nextHeight > 48);
   }, [value]);
 
   const handleKeyDown = (event) => {
@@ -44,7 +43,11 @@ function ChatComposer({
   };
 
   return (
-    <div className={`chat-composer chat-composer--${variant}`}>
+    <div
+      className={`chat-composer chat-composer--${variant}${
+        isMultiline ? " chat-composer--multiline" : ""
+      }`}
+    >
       <div className="chat-composer__frame">
         <textarea
           ref={textareaRef}
@@ -57,31 +60,20 @@ function ChatComposer({
         />
 
         <div className="chat-composer__footer">
-          <div className="chat-composer__actions">
-            <ModelSwitcher
-              className="chat-composer__model-switcher"
-              direction="up"
-              modelOptions={modelOptions}
-              provider={provider}
-              setProvider={setProvider}
-              triggerClassName="chat-composer__model-trigger"
-            />
-          </div>
-
           <div className="chat-composer__controls">
-          <button
-            type="button"
-            className="chat-composer__button"
-            onClick={isBusy ? onStop : onSend}
-            disabled={!isBusy && !value.trim()}
-            aria-label={isBusy ? "Stop response" : "Send message"}
-          >
-            {isBusy ? (
-              <StopIcon width="18" height="18" />
-            ) : (
-              <UpArrowIcon color="var(--text-button)" width="18" height="18" />
-            )}
-          </button>
+            <button
+              type="button"
+              className="chat-composer__button"
+              onClick={isBusy ? onStop : onSend}
+              disabled={!isBusy && !value.trim()}
+              aria-label={isBusy ? "Stop response" : "Send message"}
+            >
+              {isBusy ? (
+                <StopIcon width="20" height="20" />
+              ) : (
+                <UpArrowIcon color="var(--text-button)" width="21" height="21" />
+              )}
+            </button>
           </div>
         </div>
       </div>

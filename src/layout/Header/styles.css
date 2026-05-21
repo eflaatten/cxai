@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 20px 28px 14px;
+  padding: 0px 28px 10px;
   background: var(--background-canvas);
   overflow: visible;
 }
@@ -45,6 +45,12 @@
   width: 20px;
   height: 20px;
   display: block;
+}
+
+@media (min-width: 961px) {
+  .app-header__menu-button {
+    display: none;
+  }
 }
 
 @media (max-width: 720px) {
