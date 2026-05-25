@@ -7,6 +7,7 @@ const FLOW_WEATHER_ENDPOINT =
   "https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=34822cb4-a0dc-4893-9e50-0f90020b1de8&draft=true&targetUserId=auth0_67bdf583d7397dc4f217a8e0&displayExecutionLogs=true";
 const WEATHER_TOOL_NAME = "get_current_weather";
 const MAX_TOOL_ROUNDS = 3;
+const TOOL_RETRY_DELAYS_MS = [350, 900];
 
 const GROK_INSTRUCTIONS = `You are a task-oriented assistant.
 
@@ -200,6 +201,61 @@ const fetchXaiResponse = async ({ apiKey, body, signal }) => {
   return response.json();
 };
 
+const waitForRetry = (delay, signal) =>
+  new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(new DOMException("Request aborted", "AbortError"));
+      return;
+    }
+
+    const timeoutId = window.setTimeout(resolve, delay);
+
+    signal?.addEventListener(
+      "abort",
+      () => {
+        window.clearTimeout(timeoutId);
+        reject(new DOMException("Request aborted", "AbortError"));
+      },
+      { once: true }
+    );
+  });
+
+const withRetry = async (operation, { shouldRetry, signal }) => {
+  let lastError = null;
+
+  for (let attempt = 0; attempt <= TOOL_RETRY_DELAYS_MS.length; attempt += 1) {
+    try {
+      const result = await operation();
+
+      if (!shouldRetry?.(result)) {
+        return result;
+      }
+
+      lastError = result;
+    } catch (error) {
+      if (error?.name === "AbortError") {
+        throw error;
+      }
+
+      lastError = error;
+    }
+
+    const delay = TOOL_RETRY_DELAYS_MS[attempt];
+
+    if (delay === undefined) {
+      break;
+    }
+
+    await waitForRetry(delay, signal);
+  }
+
+  if (lastError instanceof Error) {
+    throw lastError;
+  }
+
+  return lastError;
+};
+
 const getNumericCoordinate = (value) => {
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : null;
@@ -246,7 +302,13 @@ const resolveWeatherArgs = async (args, signal) => {
   geocodingUrl.searchParams.set("language", "en");
   geocodingUrl.searchParams.set("format", "json");
 
-  const response = await fetch(geocodingUrl, { signal });
+  const response = await withRetry(
+    () => fetch(geocodingUrl, { signal }),
+    {
+      shouldRetry: (result) => !result?.ok,
+      signal,
+    }
+  );
   const payload = await response.json().catch(() => ({}));
   const result = payload?.results?.[0];
 
@@ -274,19 +336,26 @@ const invokeWeatherFlow = async (args, signal) => {
     return resolvedArgs;
   }
 
-  const response = await fetch(FLOW_WEATHER_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await withRetry(
+    () =>
+      fetch(FLOW_WEATHER_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          location: resolvedArgs.location,
+          latitude: resolvedArgs.latitude,
+          longitude: resolvedArgs.longitude,
+          unit: resolvedArgs.unit,
+        }),
+        signal,
+      }),
+    {
+      shouldRetry: (result) => !result?.ok,
+      signal,
     },
-    body: JSON.stringify({
-      location: resolvedArgs.location,
-      latitude: resolvedArgs.latitude,
-      longitude: resolvedArgs.longitude,
-      unit: resolvedArgs.unit,
-    }),
-    signal,
-  });
+  );
 
   const text = await response.text();
   let payload = text;
@@ -315,7 +384,20 @@ const executeToolCall = async (toolCall, signal) => {
     };
   }
 
-  return invokeWeatherFlow(toolCall.args, signal);
+  try {
+    return await invokeWeatherFlow(toolCall.args, signal);
+  } catch (error) {
+    if (error?.name === "AbortError") {
+      throw error;
+    }
+
+    console.error("Weather tool failed", error);
+    return {
+      error: "Weather tool request failed",
+      message:
+        "The weather service did not respond successfully. Ask the user to retry shortly.",
+    };
+  }
 };
 
 export async function sendChatMessage({ message, onReasoning, signal }) {
