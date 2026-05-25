@@ -1,5 +1,10 @@
 const XAI_RESPONSES_ENDPOINT = "https://api.x.ai/v1/responses";
 const GROK_MODEL = "grok-4.3";
+//https://cxf-executor-qa.cxfabric.io/restendpoint?tenant_id=bb40a7e5-3721-4bc9-b430-aa980a8e9918&flow_id=6ebddf47-3694-4336-90af-578f10d6cb6c&draft=true&targetUserId=auth0_6a0b9365f87fcdb1e3441c76&displayExecutionLogs=true
+const FLOW_WEATHER_ENDPOINT =
+  "https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=34822cb4-a0dc-4893-9e50-0f90020b1de8&draft=true&targetUserId=auth0_67bdf583d7397dc4f217a8e0&displayExecutionLogs=true";
+const WEATHER_TOOL_NAME = "get_current_weather";
+const MAX_TOOL_ROUNDS = 3;
 
 const GROK_INSTRUCTIONS = `You are a task-oriented assistant.
 
@@ -8,10 +13,47 @@ Guidelines:
 - If you are uncertain, say so rather than guessing
 - Do not reveal hidden reasoning, private analysis, or meta-commentary about what the user said
 - For simple tests or greetings, answer directly
+- When the user asks for current weather, temperature, precipitation, or current conditions, call get_current_weather
+- For weather requests, infer latitude and longitude for well-known locations when you are confident; ask a clarifying question when the location is ambiguous
 
 Format: Keep answers concise and useful.`;
 
 const FALLBACK_MESSAGE = "I am unable to process your request right now.";
+
+const GROK_TOOLS = [
+  { type: "web_search" },
+  {
+    type: "function",
+    name: WEATHER_TOOL_NAME,
+    description:
+      "Get current weather from the CX Fabric weather flow. Use this for current weather, temperature, precipitation, and conditions.",
+    parameters: {
+      type: "object",
+      properties: {
+        location: {
+          type: "string",
+          description: "Human-readable place name, for example Austin, TX.",
+        },
+        latitude: {
+          type: "number",
+          description: "Latitude in decimal degrees.",
+        },
+        longitude: {
+          type: "number",
+          description: "Longitude in decimal degrees.",
+        },
+        unit: {
+          type: "string",
+          enum: ["celsius", "fahrenheit"],
+          default: "fahrenheit",
+          description: "Preferred temperature unit.",
+        },
+      },
+      required: ["location", "latitude", "longitude"],
+      additionalProperties: false,
+    },
+  },
+];
 
 const getXaiApiKey = () =>
   process.env.REACT_APP_XAI_API_KEY || process.env.XAI_API_KEY || "";
@@ -65,42 +107,6 @@ const extractAssistantMessage = (payload, depth = 0) => {
   );
 };
 
-const extractStreamingDelta = (payload) => {
-  if (!payload || typeof payload !== "object") {
-    return "";
-  }
-
-  const type = String(payload.type || "");
-
-  if (!type.includes("output_text") || !type.includes("delta")) {
-    return "";
-  }
-
-  return (
-    getTextFromContent(payload.delta) ||
-    getTextFromContent(payload.output_text?.delta) ||
-    getTextFromContent(payload.text?.delta)
-  );
-};
-
-const extractReasoningDelta = (payload) => {
-  if (!payload || typeof payload !== "object") {
-    return "";
-  }
-
-  const type = String(payload.type || "");
-
-  if (!type.includes("reasoning") || !type.includes("delta")) {
-    return "";
-  }
-
-  return (
-    getTextFromContent(payload.delta) ||
-    getTextFromContent(payload.summary?.delta) ||
-    getTextFromContent(payload.text?.delta)
-  );
-};
-
 const splitVisibleReasoning = (text) => {
   const normalized = text.trim();
   const leadInPattern =
@@ -121,29 +127,118 @@ const splitVisibleReasoning = (text) => {
   return { answer, reasoning };
 };
 
-const parseStreamingChunk = (chunk) => {
-  if (!chunk.trim()) {
-    return { answerDelta: "", reasoningDelta: "" };
+const parseToolArguments = (value) => {
+  if (!value) {
+    return {};
   }
 
-  return chunk
-    .split("\n")
-    .filter((line) => line.startsWith("data:"))
-    .map((line) => line.replace(/^data:\s*/, "").trim())
-    .filter((line) => line && line !== "[DONE]")
-    .reduce(
-      (accumulator, line) => {
-        try {
-          const payload = JSON.parse(line);
-          accumulator.answerDelta += extractStreamingDelta(payload);
-          accumulator.reasoningDelta += extractReasoningDelta(payload);
-        } catch {
-          return accumulator;
-        }
-        return accumulator;
-      },
-      { answerDelta: "", reasoningDelta: "" }
-    );
+  if (typeof value === "object") {
+    return value;
+  }
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return {};
+  }
+};
+
+const extractFunctionCalls = (payload) => {
+  const output = Array.isArray(payload?.output)
+    ? payload.output
+    : Array.isArray(payload?.response?.output)
+      ? payload.response.output
+      : [];
+
+  return output
+    .filter((item) => item?.type === "function_call")
+    .map((item) => ({
+      name: item.name || item.function?.name || "",
+      callId: item.call_id || item.callId || item.id || "",
+      args: parseToolArguments(item.arguments || item.function?.arguments),
+    }))
+    .filter((item) => item.name && item.callId);
+};
+
+const createXaiRequestBody = (input, options = {}) => {
+  const { includeInstructions = true, ...requestOptions } = options;
+
+  return {
+    model: GROK_MODEL,
+    ...(includeInstructions ? { instructions: GROK_INSTRUCTIONS } : {}),
+    max_output_tokens: 1000000,
+    tools: GROK_TOOLS,
+    reasoning: {
+      effort: "low",
+    },
+    input,
+    ...requestOptions,
+  };
+};
+
+const fetchXaiResponse = async ({ apiKey, body, signal }) => {
+  const response = await fetch(XAI_RESPONSES_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(body),
+    signal,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    console.error("Grok request failed", response.status, errorText);
+    return null;
+  }
+
+  return response.json();
+};
+
+const invokeWeatherFlow = async (args, signal) => {
+  const response = await fetch(FLOW_WEATHER_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      location: args.location,
+      latitude: args.latitude,
+      longitude: args.longitude,
+      unit: args.unit || "fahrenheit",
+    }),
+    signal,
+  });
+
+  const text = await response.text();
+  let payload = text;
+
+  try {
+    payload = text ? JSON.parse(text) : {};
+  } catch {
+    payload = { raw: text };
+  }
+
+  if (!response.ok) {
+    return {
+      error: "Weather flow request failed",
+      status: response.status,
+      details: payload,
+    };
+  }
+
+  return payload;
+};
+
+const executeToolCall = async (toolCall, signal) => {
+  if (toolCall.name !== WEATHER_TOOL_NAME) {
+    return {
+      error: `Unknown tool: ${toolCall.name}`,
+    };
+  }
+
+  return invokeWeatherFlow(toolCall.args, signal);
 };
 
 export async function sendChatMessage({ message, onReasoning, signal }) {
@@ -156,86 +251,60 @@ export async function sendChatMessage({ message, onReasoning, signal }) {
     };
   }
 
-  const response = await fetch(XAI_RESPONSES_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: GROK_MODEL,
-      instructions: GROK_INSTRUCTIONS,
-      max_output_tokens: 1000000,
-      tools: [{ type: "web_search" }],
-      reasoning: {
-        effort: "low",
-      },
-      stream: true,
-      input: message,
-    }),
+  let payload = await fetchXaiResponse({
+    apiKey,
+    body: createXaiRequestBody([{ role: "user", content: message }]),
     signal,
   });
 
-  if (!response.ok) {
+  if (!payload) {
     return { text: FALLBACK_MESSAGE, reasoning: "" };
   }
 
-  if (!response.body) {
-    const payload = await response.json();
-    const { answer, reasoning } = splitVisibleReasoning(
-      extractAssistantMessage(payload) || FALLBACK_MESSAGE
-    );
+  let toolRound = 0;
 
-    return { text: answer, reasoning };
-  }
+  while (toolRound < MAX_TOOL_ROUNDS) {
+    const toolCalls = extractFunctionCalls(payload);
 
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-  let assistantMessage = "";
-  let reasoningMessage = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-
-    if (done) {
+    if (!toolCalls.length) {
       break;
     }
 
-    buffer += decoder.decode(value, { stream: true });
-    const chunks = buffer.split("\n\n");
-    buffer = chunks.pop() || "";
+    toolRound += 1;
+    onReasoning?.("Checking the weather flow...");
 
-    for (const chunk of chunks) {
-      const { answerDelta, reasoningDelta } = parseStreamingChunk(chunk);
-      assistantMessage += answerDelta;
+    const toolOutputs = await Promise.all(
+      toolCalls.map(async (toolCall) => ({
+        type: "function_call_output",
+        call_id: toolCall.callId,
+        output: JSON.stringify(await executeToolCall(toolCall, signal)),
+      }))
+    );
 
-      if (reasoningDelta) {
-        reasoningMessage += reasoningDelta;
-        onReasoning?.(reasoningMessage.trim());
-      }
+    payload = await fetchXaiResponse({
+      apiKey,
+      body: createXaiRequestBody(toolOutputs, {
+        includeInstructions: false,
+        previous_response_id: payload.id,
+      }),
+      signal,
+    });
+
+    if (!payload) {
+      return { text: FALLBACK_MESSAGE, reasoning: "" };
     }
   }
 
-  const { answerDelta, reasoningDelta } = parseStreamingChunk(buffer);
-  assistantMessage += answerDelta;
-
-  if (reasoningDelta) {
-    reasoningMessage += reasoningDelta;
-    onReasoning?.(reasoningMessage.trim());
-  }
-
   const { answer, reasoning } = splitVisibleReasoning(
-    assistantMessage.trim() || FALLBACK_MESSAGE
+    extractAssistantMessage(payload) || FALLBACK_MESSAGE
   );
-  const finalReasoning = reasoningMessage.trim() || reasoning;
 
-  if (finalReasoning) {
-    onReasoning?.(finalReasoning);
+  if (reasoning) {
+    onReasoning?.(reasoning);
   }
 
   return {
     text: answer,
-    reasoning: finalReasoning,
+    reasoning,
   };
 }
