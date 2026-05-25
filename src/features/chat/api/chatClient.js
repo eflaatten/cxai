@@ -1,5 +1,7 @@
 const XAI_RESPONSES_ENDPOINT = "https://api.x.ai/v1/responses";
 const GROK_MODEL = "grok-4.3";
+const OPEN_METEO_GEOCODING_ENDPOINT =
+  "https://geocoding-api.open-meteo.com/v1/search";
 //https://cxf-executor-qa.cxfabric.io/restendpoint?tenant_id=bb40a7e5-3721-4bc9-b430-aa980a8e9918&flow_id=6ebddf47-3694-4336-90af-578f10d6cb6c&draft=true&targetUserId=auth0_6a0b9365f87fcdb1e3441c76&displayExecutionLogs=true
 const FLOW_WEATHER_ENDPOINT =
   "https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=34822cb4-a0dc-4893-9e50-0f90020b1de8&draft=true&targetUserId=auth0_67bdf583d7397dc4f217a8e0&displayExecutionLogs=true";
@@ -14,7 +16,8 @@ Guidelines:
 - Do not reveal hidden reasoning, private analysis, or meta-commentary about what the user said
 - For simple tests or greetings, answer directly
 - When the user asks for current weather, temperature, precipitation, or current conditions, call get_current_weather
-- For weather requests, infer latitude and longitude for well-known locations when you are confident; ask a clarifying question when the location is ambiguous
+- For weather requests, pass the user's location phrase to get_current_weather; include latitude and longitude only when you are confident
+- Ask a clarifying question when the requested location is ambiguous
 
 Format: Keep answers concise and useful.`;
 
@@ -32,7 +35,8 @@ const GROK_TOOLS = [
       properties: {
         location: {
           type: "string",
-          description: "Human-readable place name, for example Austin, TX.",
+          description:
+            "Human-readable place name from the user's request, for example Austin, TX or Leander Texas.",
         },
         latitude: {
           type: "number",
@@ -49,7 +53,7 @@ const GROK_TOOLS = [
           description: "Preferred temperature unit.",
         },
       },
-      required: ["location", "latitude", "longitude"],
+      required: ["location"],
       additionalProperties: false,
     },
   },
@@ -196,17 +200,90 @@ const fetchXaiResponse = async ({ apiKey, body, signal }) => {
   return response.json();
 };
 
+const getNumericCoordinate = (value) => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
+  }
+
+  if (typeof value === "string" && value.trim()) {
+    const parsedValue = Number.parseFloat(value);
+    return Number.isFinite(parsedValue) ? parsedValue : null;
+  }
+
+  return null;
+};
+
+const formatGeocodedLocation = (result, fallbackLocation) =>
+  [result.name, result.admin1, result.country_code]
+    .filter(Boolean)
+    .join(", ") || fallbackLocation;
+
+const resolveWeatherArgs = async (args, signal) => {
+  const latitude = getNumericCoordinate(args.latitude);
+  const longitude = getNumericCoordinate(args.longitude);
+
+  if (latitude !== null && longitude !== null) {
+    return {
+      ...args,
+      latitude,
+      longitude,
+      unit: args.unit || "fahrenheit",
+    };
+  }
+
+  const location = String(args.location || "").trim();
+
+  if (!location) {
+    return {
+      ...args,
+      error: "Weather location is required.",
+    };
+  }
+
+  const geocodingUrl = new URL(OPEN_METEO_GEOCODING_ENDPOINT);
+  geocodingUrl.searchParams.set("name", location);
+  geocodingUrl.searchParams.set("count", "1");
+  geocodingUrl.searchParams.set("language", "en");
+  geocodingUrl.searchParams.set("format", "json");
+
+  const response = await fetch(geocodingUrl, { signal });
+  const payload = await response.json().catch(() => ({}));
+  const result = payload?.results?.[0];
+
+  if (!response.ok || !result) {
+    return {
+      ...args,
+      error: `Could not resolve coordinates for ${location}.`,
+      details: payload,
+    };
+  }
+
+  return {
+    ...args,
+    location: formatGeocodedLocation(result, location),
+    latitude: result.latitude,
+    longitude: result.longitude,
+    unit: args.unit || "fahrenheit",
+  };
+};
+
 const invokeWeatherFlow = async (args, signal) => {
+  const resolvedArgs = await resolveWeatherArgs(args, signal);
+
+  if (resolvedArgs.error) {
+    return resolvedArgs;
+  }
+
   const response = await fetch(FLOW_WEATHER_ENDPOINT, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      location: args.location,
-      latitude: args.latitude,
-      longitude: args.longitude,
-      unit: args.unit || "fahrenheit",
+      location: resolvedArgs.location,
+      latitude: resolvedArgs.latitude,
+      longitude: resolvedArgs.longitude,
+      unit: resolvedArgs.unit,
     }),
     signal,
   });
