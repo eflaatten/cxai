@@ -143,7 +143,7 @@ function ChatMessage({
       }`}
     >
       <div className="chat-message__meta">
-        <span>{message.role === "user" ? "You" : "CXAI"}</span>
+        <span>{message.role === "user" ? "You" : "CXF Copilot"}</span>
       </div>
 
       <div className="chat-message__card">
