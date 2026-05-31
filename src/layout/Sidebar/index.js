@@ -9,8 +9,6 @@ import {
   MenuOpenIcon,
   SettingsIcon,
 } from "../../assets/icons";
-import cxfCircle from "../../assets/logos/cxfab_circle.png";
-import cxfLogo from "../../assets/logos/cxf_logo.png";
 import makoLogoDarkMini from "../../assets/logos/Mako_Logo_White_mini.png";
 import makoLogoLightMini from "../../assets/logos/Mako_Logo_mini.png"
 import makoLogoDark from "../../assets/logos/Mako Logo.png";
