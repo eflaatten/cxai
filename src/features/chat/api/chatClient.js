@@ -1,11 +1,21 @@
 const XAI_RESPONSES_ENDPOINT = "https://api.x.ai/v1/responses";
 const GROK_MODEL = "grok-4.3";
+
+// WEATHER TOOL
 const OPEN_METEO_GEOCODING_ENDPOINT =
   "https://geocoding-api.open-meteo.com/v1/search";
+//https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=69e5fde2-e20d-4048-9499-8665cc70a0a5&draft=true&targetUserId=auth0_67bdf583d7397dc4f217a8e0&displayExecutionLogs=true // weather.gov api
+//https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=34822cb4-a0dc-4893-9e50-0f90020b1de8&draft=true&targetUserId=auth0_67bdf583d7397dc4f217a8e0&displayExecutionLogs=true // open-meteo
 //https://cxf-executor-qa.cxfabric.io/restendpoint?tenant_id=bb40a7e5-3721-4bc9-b430-aa980a8e9918&flow_id=6ebddf47-3694-4336-90af-578f10d6cb6c&draft=true&targetUserId=auth0_6a0b9365f87fcdb1e3441c76&displayExecutionLogs=true
-const FLOW_WEATHER_ENDPOINT =
-  "https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=34822cb4-a0dc-4893-9e50-0f90020b1de8&draft=true&targetUserId=auth0_67bdf583d7397dc4f217a8e0&displayExecutionLogs=true";
+const FLOW_WEATHER_ENDPOINT = "https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=69e5fde2-e20d-4048-9499-8665cc70a0a5&draft=true&targetUserId=auth0_67bdf583d7397dc4f217a8e0&displayExecutionLogs=true";
 const WEATHER_TOOL_NAME = "get_current_weather";
+
+// MAKO DEMO DYNAMO DB TOOL
+const DYNAMO_DB_RETRIEVAL_ENDPOINT = "https://cxf-executor-qa.cxfabric.io/restendpoint?tenant_id=1bdd5282-6602-4a6b-8ad6-a94f57c5fa2b&flow_id=14106d32-c3c7-4b02-971a-bf8ee0ce6f95&draft=true&targetUserId=auth0_6a1726b7b05e9a67c02b7af2&displayExecutionLogs=true";
+const MAKO_DEMO_TOOL_NAME = "retrieve_gas_stations";
+const MAKO_STATION_ID_MIN = 1004;
+const MAKO_STATION_ID_MAX = 10010;
+
 const MAX_TOOL_ROUNDS = 3;
 const TOOL_RETRY_DELAYS_MS = [350, 900];
 
@@ -19,6 +29,9 @@ Guidelines:
 - When the user asks for current weather, temperature, precipitation, or current conditions, call get_current_weather
 - For weather requests, pass the user's location phrase to get_current_weather; include latitude and longitude only when you are confident
 - Ask a clarifying question when the requested location is ambiguous
+- When the user mentions Mako, Mako Networks, gas stations, or a Mako station ID, call retrieve_gas_stations
+- For Mako gas station requests, require stationId from 1004 through 10010
+- Ask for a valid stationId when a Mako request is missing stationId or uses a stationId outside the supported set
 
 Format: Keep answers concise and useful.`;
 
@@ -55,6 +68,26 @@ const GROK_TOOLS = [
         },
       },
       required: ["location"],
+      additionalProperties: false,
+    },
+  },
+  {
+    type: "function",
+    name: MAKO_DEMO_TOOL_NAME,
+    description:
+      "Retrieve Mako Networks gas station information from the DynamoDB flow by stationId.",
+    parameters: {
+      type: "object",
+      properties: {
+        stationId: {
+          type: "number",
+          minimum: MAKO_STATION_ID_MIN,
+          maximum: MAKO_STATION_ID_MAX,
+          description:
+            "Mako gas station ID. Supported IDs are from 1004 through 10010.",
+        },
+      },
+      required: ["stationId"],
       additionalProperties: false,
     },
   },
@@ -256,6 +289,16 @@ const withRetry = async (operation, { shouldRetry, signal }) => {
   return lastError;
 };
 
+const parseFlowResponse = async (response) => {
+  const text = await response.text();
+
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    return { raw: text };
+  }
+};
+
 const getNumericCoordinate = (value) => {
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : null;
@@ -267,6 +310,25 @@ const getNumericCoordinate = (value) => {
   }
 
   return null;
+};
+
+const getMakoStationId = (value) => {
+  const parsedValue =
+    typeof value === "number"
+      ? value
+      : typeof value === "string" && value.trim()
+        ? Number(value)
+        : NaN;
+
+  if (
+    !Number.isInteger(parsedValue) ||
+    parsedValue < MAKO_STATION_ID_MIN ||
+    parsedValue > MAKO_STATION_ID_MAX
+  ) {
+    return null;
+  }
+
+  return parsedValue;
 };
 
 const formatGeocodedLocation = (result, fallbackLocation) =>
@@ -357,14 +419,7 @@ const invokeWeatherFlow = async (args, signal) => {
     },
   );
 
-  const text = await response.text();
-  let payload = text;
-
-  try {
-    payload = text ? JSON.parse(text) : {};
-  } catch {
-    payload = { raw: text };
-  }
+  const payload = await parseFlowResponse(response);
 
   if (!response.ok) {
     return {
@@ -377,25 +432,85 @@ const invokeWeatherFlow = async (args, signal) => {
   return payload;
 };
 
-const executeToolCall = async (toolCall, signal) => {
-  if (toolCall.name !== WEATHER_TOOL_NAME) {
+const invokeMakoDemoFlow = async (args, signal) => {
+  const stationId = getMakoStationId(args.stationId);
+
+  if (stationId === null) {
     return {
-      error: `Unknown tool: ${toolCall.name}`,
+      error: "Mako stationId is required and must be in the supported range.",
+      supportedStationIdRange: {
+        minimum: MAKO_STATION_ID_MIN,
+        maximum: MAKO_STATION_ID_MAX,
+      },
     };
   }
 
+  const response = await withRetry(
+    () =>
+      fetch(DYNAMO_DB_RETRIEVAL_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ stationId }),
+        signal,
+      }),
+    {
+      shouldRetry: (result) => !result?.ok,
+      signal,
+    },
+  );
+
+  const payload = await parseFlowResponse(response);
+
+  if (!response.ok) {
+    return {
+      error: "Mako DynamoDB retrieval flow request failed",
+      status: response.status,
+      details: payload,
+    };
+  }
+
+  return payload;
+};
+
+const getToolProgressMessage = (toolCalls) => {
+  const toolNames = new Set(toolCalls.map((toolCall) => toolCall.name));
+
+  if (toolNames.size === 1 && toolNames.has(WEATHER_TOOL_NAME)) {
+    return "Checking the weather flow...";
+  }
+
+  if (toolNames.size === 1 && toolNames.has(MAKO_DEMO_TOOL_NAME)) {
+    return "Checking the Mako station flow...";
+  }
+
+  return "Checking connected tools...";
+};
+
+const executeToolCall = async (toolCall, signal) => {
   try {
-    return await invokeWeatherFlow(toolCall.args, signal);
+    if (toolCall.name === WEATHER_TOOL_NAME) {
+      return await invokeWeatherFlow(toolCall.args, signal);
+    }
+
+    if (toolCall.name === MAKO_DEMO_TOOL_NAME) {
+      return await invokeMakoDemoFlow(toolCall.args, signal);
+    }
+
+    return {
+      error: `Unknown tool: ${toolCall.name}`,
+    };
   } catch (error) {
     if (error?.name === "AbortError") {
       throw error;
     }
 
-    console.error("Weather tool failed", error);
+    console.error(`${toolCall.name} tool failed`, error);
     return {
-      error: "Weather tool request failed",
+      error: `${toolCall.name} request failed`,
       message:
-        "The weather service did not respond successfully. Ask the user to retry shortly.",
+        "The connected service did not respond successfully. Ask the user to retry shortly.",
     };
   }
 };
@@ -430,7 +545,7 @@ export async function sendChatMessage({ message, onReasoning, signal }) {
     }
 
     toolRound += 1;
-    onReasoning?.("Checking the weather flow...");
+    onReasoning?.(getToolProgressMessage(toolCalls));
 
     const toolOutputs = await Promise.all(
       toolCalls.map(async (toolCall) => ({

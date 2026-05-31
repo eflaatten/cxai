@@ -317,7 +317,7 @@
 }
 
 .chat-composer--hero {
-  width: min(100%, 700px);
+  width: min(100%, 53rem);
 }
 
 .chat-composer__frame {

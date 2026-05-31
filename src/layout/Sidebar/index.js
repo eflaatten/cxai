@@ -11,6 +11,10 @@ import {
 } from "../../assets/icons";
 import cxfCircle from "../../assets/logos/cxfab_circle.png";
 import cxfLogo from "../../assets/logos/cxf_logo.png";
+import makoLogoDarkMini from "../../assets/logos/Mako_Logo_White_mini.png";
+import makoLogoLightMini from "../../assets/logos/Mako_Logo_mini.png"
+import makoLogoDark from "../../assets/logos/Mako Logo.png";
+import makoLogoLight from "../../assets/logos/Mako_Logo_White.png";
 import TooltipWrapper from "../../shared/components/Tooltip";
 import { useTheme } from "../../theme";
 import "./styles.css";
@@ -33,7 +37,8 @@ function Sidebar({
   onOpenSidebar,
   userEmail,
 }) {
-  const { selectedTheme, setTheme, themeOptions } = useTheme();
+  const { selectedTheme, setTheme, themeOptions, resolvedTheme } = useTheme();
+  const isDarkTheme = resolvedTheme === "dark";
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [closingMenu, setClosingMenu] = useState(null);
@@ -351,7 +356,46 @@ function Sidebar({
       >
         <div className="sidebar__top">
           <div className="sidebar__brand">
+            {/* Mako Logo for demo */}
             {isOpen ? (
+              <>
+                <img
+                  className="sidebar__logo sidebar__logo--open"
+                  src={isDarkTheme ? makoLogoLight : makoLogoDark}
+                  alt="Mako Networks"
+                />
+                <button
+                  type="button"
+                  className="sidebar__chrome-button"
+                  aria-label="Collapse sidebar"
+                  onClick={onCloseSidebar}
+                >
+                  <MenuOpenIcon />
+                </button>
+              </>
+            ):(
+              <button
+                type="button"
+                className="sidebar__brand-button"
+                aria-label="Open sidebar"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onOpenSidebar();
+                }}
+              >
+                <img
+                  className="sidebar__logo sidebar__logo--compact"
+                  src={isDarkTheme ? makoLogoDarkMini : makoLogoLightMini}
+                  alt="CXAI"
+                />
+                <span className="sidebar__brand-open-icon">
+                  <MenuIcon />
+                </span>
+              </button>
+            )}
+
+            {/* CXF Logo */}
+            {/* {isOpen ? (
               <>
                 <img
                   className="sidebar__logo sidebar__logo--open"
@@ -386,7 +430,7 @@ function Sidebar({
                   <MenuIcon />
                 </span>
               </button>
-            )}
+            )} */}
           </div>
 
           <TooltipWrapper

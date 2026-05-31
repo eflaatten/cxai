@@ -31,5 +31,5 @@ test("renders the refreshed app shell", () => {
   expect(
     screen.getByRole("button", { name: /start a new chat/i })
   ).toBeInTheDocument();
-  expect(screen.getByText(/workspace/i)).toBeInTheDocument();
+  expect(screen.getByAltText(/mako networks/i)).toBeInTheDocument();
 });

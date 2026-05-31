@@ -73,7 +73,7 @@ function ChatView({
         {!hasMessages && (
           <section className="chat-view__hero">
             <div className="chat-view__hero-copy">
-              <h1>Ask anything</h1>
+              <h1>What can I help you with?</h1>
             </div>
           </section>
         )}
