@@ -7,7 +7,7 @@ const OPEN_METEO_GEOCODING_ENDPOINT =
 //https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=69e5fde2-e20d-4048-9499-8665cc70a0a5&draft=true&targetUserId=auth0_67bdf583d7397dc4f217a8e0&displayExecutionLogs=true // weather.gov api
 //https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=34822cb4-a0dc-4893-9e50-0f90020b1de8&draft=true&targetUserId=auth0_67bdf583d7397dc4f217a8e0&displayExecutionLogs=true // open-meteo
 //https://cxf-executor-qa.cxfabric.io/restendpoint?tenant_id=bb40a7e5-3721-4bc9-b430-aa980a8e9918&flow_id=6ebddf47-3694-4336-90af-578f10d6cb6c&draft=true&targetUserId=auth0_6a0b9365f87fcdb1e3441c76&displayExecutionLogs=true
-const FLOW_WEATHER_ENDPOINT = "https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=69e5fde2-e20d-4048-9499-8665cc70a0a5&draft=true&targetUserId=*&displayExecutionLogs=true";
+const FLOW_WEATHER_ENDPOINT = "https://cxf-executor-dev.cxfabric.io/restendpoint?tenant_id=cus_QZ2vTHtqYrOmud&flow_id=34822cb4-a0dc-4893-9e50-0f90020b1de8&draft=true&targetUserId=*&displayExecutionLogs=true";
 const WEATHER_TOOL_NAME = "get_current_weather";
 
 // MAKO DEMO DYNAMO DB TOOL
