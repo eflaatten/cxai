@@ -17,7 +17,7 @@ const MAKO_STATION_ID_MIN = 1004;
 const MAKO_STATION_ID_MAX = 10010;
 
 // MAKO NETWORKS TROUBLESHOOTING TOOL
-const MAKO_TROUBLESHOOTING_ENDPOINT = "https://cxf-executor-qa.cxfabric.io/restendpoint?tenant_id=1bdd5282-6602-4a6b-8ad6-a94f57c5fa2b&flow_id=d4d18fa7-45fc-4aad-ad65-d8c95e0c46ea&draft=true&targetUserId=*&displayExecutionLogs=true";
+const MAKO_TROUBLESHOOTING_ENDPOINT = "https://cxf-executor-qa.cxfabric.io/restendpoint?tenant_id=1bdd5282-6602-4a6b-8ad6-a94f57c5fa2b&flow_id=d3ed499f-1aa5-4eaa-9cee-59cdcfd829ce&draft=true&targetUserId=*&displayExecutionLogs=true";
 const MAKO_TROUBLESHOOTING_TOOL_NAME = "get_mako_troubleshooting";
 
 const MAX_TOOL_ROUNDS = 3;
