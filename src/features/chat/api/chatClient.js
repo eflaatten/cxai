@@ -16,6 +16,10 @@ const MAKO_DEMO_TOOL_NAME = "retrieve_gas_stations";
 const MAKO_STATION_ID_MIN = 1004;
 const MAKO_STATION_ID_MAX = 10010;
 
+// MAKO NETWORKS TROUBLESHOOTING TOOL
+const MAKO_TROUBLESHOOTING_ENDPOINT = "https://cxf-executor-qa.cxfabric.io/restendpoint?tenant_id=1bdd5282-6602-4a6b-8ad6-a94f57c5fa2b&flow_id=a4ecae0a-cc50-4d96-a896-225176c100f7&draft=true&targetUserId=auth0_6a1726b7b05e9a67c02b7af2&displayExecutionLogs=true";
+const MAKO_TROUBLESHOOTING_TOOL_NAME = "get_mako_troubleshooting";
+
 const MAX_TOOL_ROUNDS = 3;
 const TOOL_RETRY_DELAYS_MS = [350, 900];
 
@@ -29,9 +33,12 @@ Guidelines:
 - When the user asks for current weather, temperature, precipitation, or current conditions, call get_current_weather
 - For weather requests, pass the user's location phrase to get_current_weather; include latitude and longitude only when you are confident
 - Ask a clarifying question when the requested location is ambiguous
-- When the user mentions Mako, Mako Networks, gas stations, or a Mako station ID, call retrieve_gas_stations
+- When the user asks for a Mako Networks gas station record or provides a Mako station ID, call retrieve_gas_stations
 - For Mako gas station requests, require stationId from 1004 through 10010
 - Ask for a valid stationId when a Mako request is missing stationId or uses a stationId outside the supported set
+- When the user asks a Mako Networks troubleshooting question, call get_mako_troubleshooting
+- For Mako troubleshooting requests, pass the user's complete question to get_mako_troubleshooting
+- Use Mako troubleshooting guidance for appliance, internet connectivity, POS, payment processing, cellular failover, placement, installation, and upgrade questions
 
 Format: Keep answers concise and useful.`;
 
@@ -88,6 +95,24 @@ const GROK_TOOLS = [
         },
       },
       required: ["stationId"],
+      additionalProperties: false,
+    },
+  },
+  {
+    type: "function",
+    name: MAKO_TROUBLESHOOTING_TOOL_NAME,
+    description:
+      "Retrieve Mako Networks troubleshooting guidance for appliance, internet connectivity, POS, payment processing, cellular failover, placement, installation, and upgrade questions.",
+    parameters: {
+      type: "object",
+      properties: {
+        question: {
+          type: "string",
+          description:
+            "The user's complete Mako Networks troubleshooting question, including the symptoms they described.",
+        },
+      },
+      required: ["question"],
       additionalProperties: false,
     },
   },
@@ -474,6 +499,44 @@ const invokeMakoDemoFlow = async (args, signal) => {
   return payload;
 };
 
+const invokeMakoTroubleshootingFlow = async (args, signal) => {
+  const question = String(args.question || "").trim();
+
+  if (!question) {
+    return {
+      error: "A Mako Networks troubleshooting question is required.",
+    };
+  }
+
+  const response = await withRetry(
+    () =>
+      fetch(MAKO_TROUBLESHOOTING_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question }),
+        signal,
+      }),
+    {
+      shouldRetry: (result) => !result?.ok,
+      signal,
+    },
+  );
+
+  const payload = await parseFlowResponse(response);
+
+  if (!response.ok) {
+    return {
+      error: "Mako Networks troubleshooting flow request failed",
+      status: response.status,
+      details: payload,
+    };
+  }
+
+  return payload;
+};
+
 const getToolProgressMessage = (toolCalls) => {
   const toolNames = new Set(toolCalls.map((toolCall) => toolCall.name));
 
@@ -483,6 +546,10 @@ const getToolProgressMessage = (toolCalls) => {
 
   if (toolNames.size === 1 && toolNames.has(MAKO_DEMO_TOOL_NAME)) {
     return "Checking the Mako station flow...";
+  }
+
+  if (toolNames.size === 1 && toolNames.has(MAKO_TROUBLESHOOTING_TOOL_NAME)) {
+    return "Checking Mako troubleshooting guidance...";
   }
 
   return "Checking connected tools...";
@@ -496,6 +563,10 @@ const executeToolCall = async (toolCall, signal) => {
 
     if (toolCall.name === MAKO_DEMO_TOOL_NAME) {
       return await invokeMakoDemoFlow(toolCall.args, signal);
+    }
+
+    if (toolCall.name === MAKO_TROUBLESHOOTING_TOOL_NAME) {
+      return await invokeMakoTroubleshootingFlow(toolCall.args, signal);
     }
 
     return {
