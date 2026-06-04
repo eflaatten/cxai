@@ -33,8 +33,7 @@ function Sidebar({
   onOpenSidebar,
   userEmail,
 }) {
-  const { selectedTheme, setTheme, themeOptions, resolvedTheme } = useTheme();
-  const isDarkTheme = resolvedTheme === "dark";
+  const { selectedTheme, setTheme, themeOptions } = useTheme();
   const [settingsMenuOpen, setSettingsMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [closingMenu, setClosingMenu] = useState(null);
