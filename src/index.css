@@ -1,49 +1,49 @@
 :root {
-  --background-canvas: #f4f7fb;
+  --background-canvas: #f7faf9;
   --background-surface: #ffffff;
-  --background-muted: #eef2f7;
-  --background-elevated: rgba(255, 255, 255, 0.88);
-  --background-inset: #e9eef5;
-  --background-overlay: rgba(15, 23, 42, 0.08);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
+  --background-muted: #edf4f1;
+  --background-elevated: rgba(255, 255, 255, 0.92);
+  --background-inset: #e7f0ed;
+  --background-overlay: rgba(18, 32, 51, 0.1);
+  --text-primary: #122033;
+  --text-secondary: #465b67;
+  --text-muted: #6e7f8b;
   --text-inverse: #ffffff;
   --text-button: #ffffff;
-  --color-primary-font: #0f172a;
-  --border-subtle: #dbe3ee;
-  --border-strong: #bcc8d8;
-  --border-accent: rgba(37, 99, 235, 0.28);
-  --accent-primary: #2563eb;
-  --accent-soft: rgba(37, 99, 235, 0.1);
-  --accent-strong: #1d4ed8;
+  --color-primary-font: #122033;
+  --border-subtle: #dce8e4;
+  --border-strong: #b8cbc5;
+  --border-accent: rgba(15, 118, 110, 0.3);
+  --accent-primary: #0f766e;
+  --accent-soft: rgba(15, 118, 110, 0.1);
+  --accent-strong: #0b5f59;
   --accent-contrast: #ffffff;
-  --interactive-hover: rgba(148, 163, 184, 0.15);
-  --interactive-active: rgba(148, 163, 184, 0.24);
-  --interactive-focus: rgba(37, 99, 235, 0.2);
-  --interactive-disabled: #94a3b8;
-  --chat-user-bubble: #2563eb;
+  --interactive-hover: rgba(15, 118, 110, 0.08);
+  --interactive-active: rgba(15, 118, 110, 0.14);
+  --interactive-focus: rgba(15, 118, 110, 0.18);
+  --interactive-disabled: #9aa9a5;
+  --chat-user-bubble: #0f766e;
   --chat-user-text: #ffffff;
   --chat-assistant-bubble: #ffffff;
-  --chat-assistant-text: #0f172a;
+  --chat-assistant-text: #122033;
   --chat-composer: rgba(255, 255, 255, 0.94);
-  --chat-composer-border: rgba(148, 163, 184, 0.28);
-  --chat-composer-ring: rgba(37, 99, 235, 0.14);
-  --chat-code-background: #f8fafc;
-  --chat-code-header: #e2e8f0;
-  --tooltip-background: #0f172a;
+  --chat-composer-border: rgba(110, 127, 139, 0.26);
+  --chat-composer-ring: rgba(15, 118, 110, 0.16);
+  --chat-code-background: #f7faf9;
+  --chat-code-header: #e7f0ed;
+  --tooltip-background: #122033;
   --tooltip-text: #ffffff;
-  --scrollbar-thumb: #c1cbda;
+  --scrollbar-thumb: #b9c9c4;
   --scrollbar-track: transparent;
-  --shadow-shell: 0 30px 80px rgba(15, 23, 42, 0.08);
-  --shadow-panel: 0 18px 48px rgba(15, 23, 42, 0.08);
-  --shadow-floating: 0 12px 36px rgba(15, 23, 42, 0.16);
+  --shadow-shell: 0 24px 70px rgba(18, 32, 51, 0.08);
+  --shadow-panel: 0 14px 36px rgba(18, 32, 51, 0.08);
+  --shadow-floating: 0 16px 40px rgba(18, 32, 51, 0.14);
   --gradient-hero: radial-gradient(
     circle at top,
-    rgba(59, 131, 246, 0.24),
+    rgba(15, 118, 110, 0.12),
     transparent 42%
   );
-  --gradient-accent: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+  --gradient-accent: linear-gradient(135deg, #0f766e 0%, #256d85 100%);
   --radius-sm: 10px;
   --radius-md: 18px;
   --radius-lg: 28px;
@@ -60,21 +60,13 @@
 html,
 body,
 #root {
+  height: 100%;
   min-height: 100%;
 }
 
 body {
   margin: 0;
-  background:
-    radial-gradient(
-      circle at top center,
-      rgba(59, 131, 246, 0.34) 0%,
-      rgba(59, 131, 246, 0.14) 16%,
-      rgba(59, 131, 246, 0.04) 30%,
-      transparent 52%
-    ),
-    var(--gradient-hero),
-    var(--background-canvas);
+  background: transparent;
   color: var(--text-primary);
   font-family: var(--typography-sans);
   -webkit-font-smoothing: antialiased;
@@ -82,7 +74,7 @@ body {
 }
 
 body.cxai-empty-state {
-  background: var(--background-canvas);
+  background: transparent;
 }
 
 button,

@@ -11,7 +11,9 @@ jest.mock("./features/chat/hooks/useChatSession", () => ({
     isTypingResponse: false,
     messages: [],
     resetChat: jest.fn(),
+    reasoningMessage: "",
     sendMessage: jest.fn(),
+    sendPrompt: jest.fn(),
     setDraft: jest.fn(),
     stopResponse: jest.fn(),
     streamingMessage: "",
@@ -29,7 +31,7 @@ test("renders the refreshed app shell", () => {
 
   expect(screen.getByText(/mock chat view/i)).toBeInTheDocument();
   expect(
-    screen.getByRole("button", { name: /start a new chat/i })
-  ).toBeInTheDocument();
-  expect(screen.getByAltText(/mako networks/i)).toBeInTheDocument();
+    screen.queryByRole("button", { name: /start a new chat/i })
+  ).not.toBeInTheDocument();
+  expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
 });

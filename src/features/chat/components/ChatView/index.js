@@ -73,7 +73,7 @@ function ChatView({
         {!hasMessages && (
           <section className="chat-view__hero">
             <div className="chat-view__hero-copy">
-              <h1>What can I help you with?</h1>
+              <h1>How can iAnswer help?</h1>
             </div>
           </section>
         )}
@@ -126,7 +126,7 @@ function ChatView({
           onChange={onDraftChange}
           onSend={onSend}
           onStop={onStop}
-          placeholder={"Ask anything..."}
+          placeholder={"Ask about iAnswer..."}
           value={draft}
           variant={hasMessages ? "thread" : "hero"}
         />

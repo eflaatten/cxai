@@ -8,7 +8,7 @@ import darkTheme from "./themes/dark";
 import lightTheme from "./themes/light";
 
 const STORAGE_KEY = "cxai-theme";
-const FALLBACK_THEME = "system";
+const FALLBACK_THEME = "light";
 const themeRegistry = {
   dark: darkTheme,
   light: lightTheme,
@@ -29,6 +29,11 @@ const getSystemTheme = () => {
 const getStoredTheme = () => {
   if (typeof window === "undefined") {
     return FALLBACK_THEME;
+  }
+
+  const requestedTheme = new URLSearchParams(window.location.search).get("theme");
+  if (["light", "dark", "system"].includes(requestedTheme)) {
+    return requestedTheme;
   }
 
   const storedTheme = window.localStorage.getItem(STORAGE_KEY);
