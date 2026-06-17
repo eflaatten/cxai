@@ -2,7 +2,7 @@ import { createThemeTokens } from "../tokens";
 
 const lightTheme = createThemeTokens("light", {
   background: {
-    canvas: "#f7faf9",
+    canvas: "#ffffff",
     surface: "#ffffff",
     muted: "#edf4f1",
     elevated: "rgba(255, 255, 255, 0.92)",
