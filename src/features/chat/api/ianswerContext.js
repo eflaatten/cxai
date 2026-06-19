@@ -12,6 +12,58 @@ Header actions: Client login opens https://ianswer-frontend-qa.cxfabric.io/signi
 Footer: iAnswer is an AI receptionist for small businesses and is powered by CXFabric. Product links include Features, Client app, and Pricing. Explore links include How it works, Integrations, and Industries. Get started links include Start free trial, Book a demo, and Contact. Legal links include Privacy and Terms. Copyright is 2026 CXFabric. Site tagline: Designed for better customer conversations.`,
     },
     {
+      title: "iAnswer FAQ and Example Answers",
+      page: "faq-examples",
+      url: "https://ianswer.io/",
+      description: "Helpful example answers for common iAnswer website visitor questions.",
+      content: `Question: What do you do?
+Answer: iAnswer helps businesses answer calls, respond to messages, book appointments, answer common questions, and reduce missed opportunities using an AI receptionist. It is especially useful for spas, salons, dental offices, home service businesses, and other appointment-based companies.
+
+Question: How does this work?
+Answer: iAnswer can connect to your business phone number, website chat, SMS, and supported booking or CRM systems. When a customer calls or messages, the AI receptionist can answer questions, help book or change appointments, capture customer details, filter spam, and escalate when needed.
+
+Question: Is this just a chatbot?
+Answer: No. iAnswer is more than a website chatbot. It can support voice calls, SMS, web chat, appointment booking, customer questions, and business workflows. The goal is to act more like a front-desk assistant than a basic chatbot.
+
+Question: Can it book appointments?
+Answer: Yes. iAnswer can help customers book, change, or cancel appointments when connected to a supported scheduling system. It can also collect the customer's name, phone number, requested service, preferred time, and other details needed for the booking.
+
+Question: Who is this for?
+Answer: iAnswer is designed for businesses that depend on customer calls and appointments. Good examples include spas, salons, med spas, dental offices, chiropractors, electricians, landscapers, home service companies, and small offices that need help answering customer questions.
+
+Question: Why would I need this?
+Answer: Missed calls often mean missed revenue. iAnswer helps by answering when staff are busy, after hours, or unavailable. It can handle common questions, booking requests, spam calls, and basic customer follow-up so your team can focus on the customer in front of them.
+
+Question: Does it replace my staff?
+Answer: iAnswer is designed to support staff, not replace the human touch. It helps with repetitive calls, appointment requests, missed calls, after-hours questions, and routine customer communication. Your team can still step in when a personal or complex conversation is needed.
+
+Question: Can it answer questions about my business?
+Answer: Yes. iAnswer can be configured around your business information, such as services, hours, pricing details, policies, FAQs, and appointment rules. That helps it answer common customer questions accurately and consistently.
+
+Question: What integrations do you support?
+Answer: iAnswer is designed to connect with scheduling, CRM, messaging, phone, and business systems. Supported integrations may include tools such as Cal.com, Mindbody, Vagaro, Square, HubSpot, Salesforce, Zoho, Toast, OpenTable, and other platforms depending on the business need.
+
+Question: Can I use this with my existing phone number?
+Answer: In many cases, yes. iAnswer can work with your business phone setup so calls can be routed to the AI receptionist, forwarded, or configured based on your needs. The exact setup depends on your current phone provider and call flow.
+
+Question: What happens if the AI cannot help?
+Answer: When needed, iAnswer can escalate to a human, capture a message, send a notification, or create a follow-up task depending on how the business wants the workflow configured.
+
+Question: Is it available after hours?
+Answer: Yes. One of the major benefits of iAnswer is that it can help respond after hours, on weekends, or when staff are unavailable. That helps customers get answers and request appointments even when the business is closed.
+
+Question: Does it stop spam calls?
+Answer: iAnswer can help reduce wasted time from spam or unwanted calls by identifying and filtering calls based on business rules and call behavior.
+
+Question: How much does it cost?
+Answer: iAnswer offers subscription plans depending on the features, usage, integrations, and level of support needed. For the most accurate pricing, it is best to contact the iAnswer team or request a demo.
+
+Question: I want a demo.
+Answer: The best next step is to request a demo so the iAnswer team can show how the AI receptionist would work for your business, including calls, messages, booking, and integrations.
+
+Casual visitor guidance: If someone says hi, explain that you can help answer questions about iAnswer, how the AI receptionist works, business types supported, missed calls, bookings, SMS, web chat, and integrations. If someone says this sounds cool, respond warmly and connect the excitement to iAnswer's goal of helping businesses avoid losing customers when nobody is available to answer. If someone says tell me more, summarize calls, SMS, website chat, booking, common questions, follow-up, after-hours support, and staff interruption reduction.`,
+    },
+    {
       title: "iAnswer AI Receptionist | Never Miss a Customer",
       page: "index.html",
       url: "https://ianswer.io/",
